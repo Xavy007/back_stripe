@@ -1,0 +1,42 @@
+### Test ServiceA through Gateway (Round Robin Load Balancing)
+GET http://localhost:8080/personas/getUsuarios
+Accept: application/json
+
+### Test ServiceA through Gateway (Round Robin Load Balancing)
+POST http://localhost:8080/nacionalidad
+Content-Type: application/json
+
+{
+  "pais": "Brasil",
+  "estado": true
+}
+
+
+
+
+
+
+
+
+
+### Test ServiceA through Gateway (Round Robin Load Balancing)
+POST http://localhost:8080/personas/registro
+Accept: application/json
+Content-Type: application/json
+
+{
+  "persona": {
+    "nombre": "Javier",
+    "ci":"71506101",
+    "genero":"masculino",
+    "fnac":"1993-07-10",
+    "ap": "Gómez",
+    "am":"Avila",
+    "id_nacionalidad": 1
+  },
+  "usuario": {
+    "email": "javier@gmail.com",
+    "password": "secreta12345",
+    "rol":"admin"
+  }
+}
