@@ -11,12 +11,19 @@ Content-Type: application/json
   "estado": true
 }
 
+###Get by id nacionalidad
+GET http://localhost:8080/nacionalidad/getbyId
+Content-Type: application/json
+Accept: application/json
 
 
+{
+  "id":6
+}
 
-
-
-
+###Get by id nacionalidad Param
+GET http://localhost:8080/nacionalidad/getbyId/5
+Accept: application/json
 
 
 ### Test ServiceA through Gateway (Round Robin Load Balancing)

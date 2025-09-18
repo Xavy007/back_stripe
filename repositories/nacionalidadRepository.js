@@ -2,8 +2,12 @@ const {Nacionalidad} = require('../models');
 
 
 const createNacionalidad = async(data)=> {
-    console.log("llegue a repo" , Nacionalidad)
-    return await Nacionalidad.create(data);
+     return await Nacionalidad.create(data);
 }
+const findall= async() =>{
+    return await Nacionalidad.findall();
+}
+const findById= (data)=> data?.id ? Nacionalidad.findByPk(data.id):(() => { throw new Error('Id incorrecto o no existe')});
 
-module.exports={createNacionalidad}
+
+module.exports={createNacionalidad, findall,findById}
