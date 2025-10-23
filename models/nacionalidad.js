@@ -2,7 +2,7 @@
 const {
   Model
 } = require('sequelize');
-const { Sequelize } = require('.');
+
 module.exports = (sequelize, DataTypes) => {
   class Nacionalidad extends Model {
      static associate(models) {

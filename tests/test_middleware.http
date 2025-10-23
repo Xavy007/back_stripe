@@ -1,0 +1,33 @@
+# Variables (pega el token aquí después del login)
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjozLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc2MTAyMTY2NSwiZXhwIjoxNzYxMDI4ODY1fQ.Bf01UhLMHbNJbptbUBjp_PttMDO2mnd6QkdDIDcTk4w
+
+### Login - obtener access y refresh (POST /api/auth/login)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "javier@gmail.com",
+  "password": "secreta12345"
+}
+
+### Listar nacionalidades (GET) - usar Authorization Bearer
+GET http://localhost:8080/api/nacionalidad/
+Authorization: Bearer {{token}}
+
+### Crear nacionalidad (POST) - solo admin/secretario
+POST http://localhost:8080/api/nacionalidad
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "pais": "Colombia"
+}
+
+### Obtener por id (GET)
+GET http://localhost:8080/api/nacionalidades/1
+Authorization: Bearer {{token}}
+
+### Refresh token (si tienes endpoint)
+POST http://localhost:8080/api/auth/refresh
+Content-Type: application/json
+Cookie: refresh_token={{token}}

@@ -18,5 +18,15 @@ const findById= async(data)=>{
         throw error;
     }
 }
+const getAll=async()=>{
+    try {
+        const nac= nacionalidadRepository.findAll();
+        return nac;
+    } catch (error) {
+        console.log(error);
+        throw error;
+        
+    }
+}
 
-module.exports={createNacionalidad, findById};
+module.exports={createNacionalidad, findById,getAll};

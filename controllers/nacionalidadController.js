@@ -28,4 +28,15 @@ const getbyIdParam=async(req,res)=>{
         res.status(500).json({error:err.message});
     }
 }
-module.exports= {registrar,getbyId,getbyIdParam}
+const getAll = async (req, res) => {
+  try {
+    const nacionalidades = await nacionalidadService.getAll();
+    console.log('getAll result count:', Array.isArray(nacionalidades) ? nacionalidades.length : 0);
+    return res.status(200).json(nacionalidades);
+  } catch (err) {
+    console.error('getAll error:', err);
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports= {registrar,getbyId,getbyIdParam,getAll}
