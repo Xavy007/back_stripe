@@ -5,15 +5,21 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Persona extends Model {
     static associate(models) {
-      Persona.belongsTo(models.Nacionalidad,{
-        foreignKey:'id_nacionalidad',
+      Persona.belongsTo(models.Nacionalidad, {
+        foreignKey: 'id_nacionalidad',
         as: 'nacionalidad'
       });
-      Persona.hasOne(models.Usuario,{
-        foreignKey:'id_persona',
-        as:'usuario'
+      Persona.hasOne(models.Usuario, {
+        foreignKey: 'id_persona',
+        as: 'usuario'
       });
-    }
+      Persona.hasMany(models.Jugador,{
+        foreignKey:'id_persona'  });
+      Persona.hasMany(models.Juez, { foreignKey: 'id_persona' });
+      Persona.hasMany(models.EqTecnico, { foreignKey: 'id_persona' });
+      
+      
+   }
   }
   Persona.init({
     id_persona: {
@@ -27,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          args:[7,15],
-          msg:'El ci es invalido'
+          args: [7, 15],
+          msg: 'El ci es invalido'
         }
       }
     },
@@ -92,13 +98,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     id_nacionalidad: {
       type: DataTypes.INTEGER,
-      allowNull:false,
-      references:{
-        model:'Personas',
-        key:'id_persona'
-      },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL' 
+      allowNull: false
     },
     genero: {
       type: DataTypes.ENUM('masculino', 'femenino', 'otro'),
@@ -111,6 +111,9 @@ module.exports = (sequelize, DataTypes) => {
       }
 
     },
+    foto:{
+     type:DataTypes.STRING 
+    },
     freg: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
@@ -120,7 +123,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: 'Persona',
-      timestamps:true
+      timestamps: true
     });
   return Persona;
 };

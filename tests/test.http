@@ -15,9 +15,26 @@ POST http://localhost:8080/api/nacionalidad
 Content-Type: application/json
 
 {
-  "pais": "Brasil",
-  "estado": true
+  "pais": "Chile",
+  "estado": false
 }
+
+
+### Test ServiceA through Gateway (Round Robin Load Balancing)
+PUT http://localhost:8080/api/nacionalidad/1
+Content-Type: application/json
+
+{
+  "pais": "Bolivia"
+}
+
+### Delete
+DELETE http://localhost:8080/api/nacionalidad/3
+Accept: application/json
+
+
+
+
 
 ###Get by id nacionalidad
 GET http://localhost:8080/nacionalidad/getbyId
@@ -35,7 +52,7 @@ Accept: application/json
 
 
 ### Test ServiceA through Gateway (Round Robin Load Balancing)
-POST http://localhost:8080/personas/registro
+POST http://localhost:8080/api/personas/registro
 Accept: application/json
 Content-Type: application/json
 

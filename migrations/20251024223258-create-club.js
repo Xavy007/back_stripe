@@ -2,48 +2,45 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Personas', {
-      id_persona: {
+    await queryInterface.createTable('Clubes', {
+      id_club: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ci: {
-
-        type: Sequelize.STRING
-      },
       nombre: {
         type: Sequelize.STRING
       },
-      ap: {
+      acronimo: {
         type: Sequelize.STRING
       },
-      am: {
+      direccion: {
         type: Sequelize.STRING
       },
-      fnac: {
-        type: Sequelize.DATE
+      logo: {
+        type: Sequelize.STRING
       },
-      estado: {
+      telefono: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      redes_sociales: {
+        type: Sequelize.STRING
+      },
+      personeria: {
         type: Sequelize.BOOLEAN
       },
-      genero: {
-        type: Sequelize.ENUM('masculino','femenino','otro'),
-        allowNull:false
+      estado: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       freg: {
-        type: Sequelize.DATE
-      },
-      id_nacionalidad: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Nacionalidades',
-            key: 'id_nacionalidad'
-          },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        type: Sequelize.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Personas');
+    await queryInterface.dropTable('Clubs');
   }
 };

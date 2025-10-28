@@ -2,7 +2,7 @@ const { Usuario, Session } = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { body, validationResult } = require('express-validator'); // Importamos express-validator
+const { body, validationResult } = require('express-validator'); 
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;

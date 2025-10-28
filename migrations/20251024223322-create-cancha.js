@@ -2,48 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Personas', {
-      id_persona: {
+    await queryInterface.createTable('Canchas', {
+      
+      id_cancha: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ci: {
-
-        type: Sequelize.STRING
-      },
       nombre: {
         type: Sequelize.STRING
       },
-      ap: {
+      descripcion: {
         type: Sequelize.STRING
       },
-      am: {
+      direccion: {
         type: Sequelize.STRING
       },
-      fnac: {
-        type: Sequelize.DATE
+      ubicacion: {
+        type: Sequelize.STRING
+      },
+      tipo: {
+        type: Sequelize.ENUM('coliseo', 'abierta', 'otro'),
+        allowNull: false,
+        defaultValue: 'coliseo'
+      },
+      capacidad: {
+        type: Sequelize.INTEGER
       },
       estado: {
         type: Sequelize.BOOLEAN
       },
-      genero: {
-        type: Sequelize.ENUM('masculino','femenino','otro'),
-        allowNull:false
-      },
       freg: {
         type: Sequelize.DATE
-      },
-      id_nacionalidad: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Nacionalidades',
-            key: 'id_nacionalidad'
-          },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Personas');
+    await queryInterface.dropTable('Canchas');
   }
 };

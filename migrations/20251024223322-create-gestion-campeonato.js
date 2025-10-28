@@ -2,48 +2,27 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Personas', {
-      id_persona: {
+    await queryInterface.createTable('GestionCampeonatos', {
+      id_gestion: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      ci: {
-
-        type: Sequelize.STRING
-      },
       nombre: {
         type: Sequelize.STRING
       },
-      ap: {
-        type: Sequelize.STRING
+      gestion: {
+        type: Sequelize.INTEGER
       },
-      am: {
+      descripcion: {
         type: Sequelize.STRING
-      },
-      fnac: {
-        type: Sequelize.DATE
       },
       estado: {
         type: Sequelize.BOOLEAN
       },
-      genero: {
-        type: Sequelize.ENUM('masculino','femenino','otro'),
-        allowNull:false
-      },
       freg: {
         type: Sequelize.DATE
-      },
-      id_nacionalidad: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Nacionalidades',
-            key: 'id_nacionalidad'
-          },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
       },
       createdAt: {
         allowNull: false,
@@ -56,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Personas');
+    await queryInterface.dropTable('GestionCampeonatos');
   }
 };

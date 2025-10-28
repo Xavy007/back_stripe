@@ -38,5 +38,34 @@ const getAll = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+const updateNac = async (req, res)=>{
+    try {
+        const {id_nacionalidad}=req.params;
+        const data= req.body;
+        console.log(id_nacionalidad);
+        console.log(data);
+        const nacionalidad= await nacionalidadService.updateNacionalidad(id_nacionalidad,data);
+        return res.status(200).json({
+            message: 'Nacionalidad actualizada con éxito',
+            nacionalidad: nacionalidad 
+        });
+    } catch (error) {
+        console.error('getAll error:', error);
+        return res.status(500).json({ error: error.message });
+    }
 
-module.exports= {registrar,getbyId,getbyIdParam,getAll}
+}
+const deleteNacionalidad=async(req,res)=>{
+    try {
+        const {id_nacionalidad}=req.params;
+        const nacionalidad= await nacionalidadService.deleteNacionalidad(id_nacionalidad);
+        return res.status(200).json({
+            message:'Nacionalidad Eliminada',
+            nacionalidad:nacionalidad
+        })
+    } catch (error) {
+        console.error('getAll error:', error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+module.exports= {registrar,getbyId,getbyIdParam,getAll,updateNac,deleteNacionalidad}

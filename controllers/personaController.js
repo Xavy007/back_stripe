@@ -6,7 +6,9 @@ const registrar = async (req, res) => {
     const { persona, usuario } = await createPersonaUsuario(
       req.body.persona,
       req.body.usuario
+      
     );
+    console.log(req);
     res.status(201).json({ persona, usuario });
   } catch (error) {
     res.status(400).json({ error: error.message });

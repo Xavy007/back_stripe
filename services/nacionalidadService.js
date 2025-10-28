@@ -28,5 +28,20 @@ const getAll=async()=>{
         
     }
 }
+const updateNacionalidad= async(id_nacionalidad, data)=>{
+    try{
+        await nacionalidadRepository.updateNacionalidad(id_nacionalidad, data);
+    }
+    catch (error) {
+        throw error;
+    }
+}
+const deleteNacionalidad= async(id_nacionalidad)=>{
+    try {
+        await nacionalidadRepository.eliminarNacionalidad(id_nacionalidad);
+    } catch (error) {
+        throw error;
+    }
+}
 
-module.exports={createNacionalidad, findById,getAll};
+module.exports={createNacionalidad, findById,getAll, updateNacionalidad, deleteNacionalidad};

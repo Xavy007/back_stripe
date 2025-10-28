@@ -28,10 +28,10 @@ app.use('/api/nacionalidad',nacionalidadroute);
 
 app.use((req, res, next) => { console.log(`${req.method} ${req.path}`); next(); });
 
-const PORT = process.env.PORT || 3000;
+/*const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+});*/
 
 module.exports=app;
