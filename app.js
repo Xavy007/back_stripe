@@ -14,7 +14,7 @@ const clubroutes=require('./routes/clubes.routes');
 const campeonatoroutes=require('./routes/campeonato.routes');
 const gestionCampeonatoroutes=require('./routes/gestionCampeonato.routes')
 const equipoRoutes= require('./routes/equipos.routes')
-
+const campeonatoCategoriaroutes=require('./routes/campeonatoCategoria.routes');
 app.use(express.json());
 
 app.get('/api/protegido', authMiddleware, (req, res) => {
@@ -36,6 +36,7 @@ app.use('/api/club',clubroutes);
 app.use('/api/campeonato',campeonatoroutes);
 app.use('/api/gestion-campeonato',gestionCampeonatoroutes);
 app.use('/api/equipo',equipoRoutes);
+app.use('/api/campeonato-categoria',campeonatoCategoriaroutes);
 app.use((req, res, next) => { console.log(`${req.method} ${req.path}`); next(); });
 
 /*const PORT = process.env.PORT || 3000;

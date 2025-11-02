@@ -30,8 +30,9 @@ module.exports = {
         onDelete: 'SET NULL'
       },
       formato: {
-        type: Sequelize.ENUM('grupos', 'liga', 'eliminatoria', 'mixto'),
-          allowNull: false
+        type: Sequelize.ENUM('todos_vs_todos','eliminacion_directa','grupos_y_eliminacion','liga'),
+          allowNull: false,
+          defaultValue:'todos_vs_todos'
       },
       numero_grupos: {
         type: Sequelize.INTEGER

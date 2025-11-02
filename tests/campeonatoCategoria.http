@@ -1,0 +1,124 @@
+
+### Obtener todas las campeonato-categorías activas
+GET http://localhost:8080/api/campeonato-categoria/
+Accept: application/json
+
+### Obtener todas las campeonato-categorías (incluyendo inactivas)
+GET http://localhost:8080/api/campeonato-categoria/todas
+Accept: application/json
+
+### Crear una Campeonato-Categoría - Formato Liga
+POST http://localhost:8080/api/campeonato-categoria
+Content-Type: application/json
+
+{
+  "id_campeonato": 2,
+  "id_categoria": 1,
+  "formato": "liga"
+}
+
+### Crear una Campeonato-Categoría - Formato Todos vs Todos
+POST http://localhost:8080/api/campeonato-categoria
+Content-Type: application/json
+
+{
+  "id_campeonato": 2,
+  "id_categoria": 1,
+  "formato": "todos_vs_todos"
+}
+
+### Crear una Campeonato-Categoría - Formato Eliminación Directa
+POST http://localhost:8080/api/campeonato-categoria
+Content-Type: application/json
+
+{
+  "id_campeonato": 2,
+  "id_categoria": 1,
+  "formato": "eliminacion_directa"
+}
+
+### Crear una Campeonato-Categoría - Formato Grupos y Eliminación
+POST http://localhost:8080/api/campeonato-categoria
+Content-Type: application/json
+
+{
+  "id_campeonato": 2,
+  "id_categoria": 2,
+  "formato": "grupos_y_eliminacion",
+  "numero_grupos": 4
+}
+
+### Get campeonato-categoría por ID
+GET http://localhost:8080/api/campeonato-categoria/1
+Content-Type: application/json
+Accept: application/json
+
+### Get campeonato-categoría por ID - Por body
+POST http://localhost:8080/api/campeonato-categoria/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Obtener campeonato-categorías por campeonato
+GET http://localhost:8080/api/campeonato-categoria/campeonato/1
+Accept: application/json
+
+### Obtener campeonato-categorías por campeonato - Campeonato 2
+GET http://localhost:8080/api/campeonato-categoria/campeonato/2
+Accept: application/json
+
+### Obtener campeonato-categorías por categoría
+GET http://localhost:8080/api/campeonato-categoria/categoria/1
+Accept: application/json
+
+### Obtener campeonato-categorías por categoría - Categoría 2
+GET http://localhost:8080/api/campeonato-categoria/categoria/2
+Accept: application/json
+
+### Obtener campeonato-categorías por formato - Liga
+GET http://localhost:8080/api/campeonato-categoria/formato/liga
+Accept: application/json
+
+### Obtener campeonato-categorías por formato - Todos vs Todos
+GET http://localhost:8080/api/campeonato-categoria/formato/todos_vs_todos
+Accept: application/json
+
+### Obtener campeonato-categorías por formato - Grupos y Eliminación
+GET http://localhost:8080/api/campeonato-categoria/formato/grupos_y_eliminacion
+Accept: application/json
+
+### Editar campeonato-categoría - Cambiar formato
+PUT http://localhost:8080/api/campeonato-categoria/1
+Content-Type: application/json
+
+{
+  "formato": "todos_vs_todos"
+}
+
+### Editar campeonato-categoría - Cambiar número de grupos
+PUT http://localhost:8080/api/campeonato-categoria/4
+Content-Type: application/json
+
+{
+  "numero_grupos": 6
+}
+
+### Editar campeonato-categoría - Cambiar formato y grupos
+PUT http://localhost:8080/api/campeonato-categoria/2
+Content-Type: application/json
+
+{
+  "formato": "grupos_y_eliminacion",
+  "numero_grupos": 3
+}
+
+### Eliminar logicamente una campeonato-categoría
+DELETE http://localhost:8080/api/campeonato-categoria/3
+Accept: application/json
+
+### Eliminar otra campeonato-categoría
+DELETE http://localhost:8080/api/campeonato-categoria/4
+Accept: application/json

@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
       allowNull:false
     },
-    formato: { type: DataTypes.ENUM(...FORMATO_VALUES), allowNull: false, defaultValue: 'liga' },
+    formato: { type: DataTypes.ENUM(...FORMATO_VALUES), allowNull: false, defaultValue: 'todos_vs_todos' },
     numero_grupos:{
       type:DataTypes.INTEGER,
       allowNull:true
@@ -47,6 +47,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'CampeonatoCategoria',
+    tableName:'CampeonatoCategorias'
   });
   return CampeonatoCategoria;
 };
