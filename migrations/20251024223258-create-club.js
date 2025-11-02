@@ -39,8 +39,7 @@ module.exports = {
       },
       freg: {
         type: Sequelize.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: true
+        defaultValue:Sequelize.NOW
       },
       createdAt: {
         allowNull: false,

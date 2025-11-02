@@ -1,0 +1,87 @@
+### Obtener todas las canchas activas
+GET http://localhost:8080/api/canchas/
+Accept: application/json
+
+### Obtener todas las canchas (incluyendo inactivas)
+GET http://localhost:8080/api/canchas/todas
+Accept: application/json
+
+### Agregar una Cancha
+POST http://localhost:8080/api/canchas
+Content-Type: application/json
+
+{
+  "nombre": "Coliseo La Pampa",
+  "tipo": "coliseo",
+  "capacidad": 5000,
+  "direccion": "Av. Los Membrillos",
+  "ubicacion": "Cerca del Hospital Obrero",
+  "descripcion": "Cancha cubierta con buenas instalaciones"
+}
+
+### Agregar una Cancha - Tipo Abierta
+POST http://localhost:8080/api/canchas
+Content-Type: application/json
+
+{
+  "nombre": "Cancha A- Garcia Agreda",
+  "tipo": "abierta",
+  "capacidad": 300,
+  "direccion": "Av. Victor Paz Estenssoro",
+  "ubicacion": "Complejo Deprotivo Garcia",
+  "descripcion": "Cancha abierta"
+}
+
+### Agregar una Cancha - Tipo Otro
+POST http://localhost:8080/api/canchas
+Content-Type: application/json
+
+{
+  "nombre": "Cancha Especial",
+  "tipo": "otro",
+  "capacidad": 200,
+  "direccion": "Calle Especial 789"
+}
+
+### Editar una canchas
+PUT http://localhost:8080/api/canchas/1
+Content-Type: application/json
+
+{
+  "capacidad": 6000,
+  "descripcion": "Cancha cubierta con instalaciones mejoradas"
+}
+
+### Editar solo el tipo de canchas
+PUT http://localhost:8080/api/canchas/2
+Content-Type: application/json
+
+{
+  "tipo": "abierta"
+}
+
+### Editar ubicacion de canchas
+PUT http://localhost:8080/api/canchas/3
+Content-Type: application/json
+
+{
+  "ubicacion": "Sector Este - Barrio Nuevo"
+}
+
+### Eliminar logicamente una canchas
+DELETE http://localhost:8080/api/canchas/2
+Accept: application/json
+
+### Get canchas por ID
+GET http://localhost:8080/api/canchas/2
+Content-Type: application/json
+Accept: application/json
+
+### Get canchas por ID - Alternativa (si lo prefieres así)
+GET http://localhost:8080/api/canchas/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}

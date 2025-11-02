@@ -1,0 +1,146 @@
+### Obtener todos los campeonatos activos
+GET http://localhost:8080/api/campeonato/
+Accept: application/json
+
+### Obtener todos los campeonatos (incluyendo inactivos)
+GET http://localhost:8080/api/campeonato/todos
+Accept: application/json
+
+### Crear un Campeonato - Liga
+POST http://localhost:8080/api/campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Liga Profesional 2025",
+  "tipo": "liga",
+  "id_gestion": 1,
+  "fecha_inicio": "2025-03-01T00:00:00Z",
+  "fecha_fin": "2025-11-30T00:00:00Z",
+  "c_estado": "programado"
+}
+
+### Crear un Campeonato - Copa
+POST http://localhost:8080/api/campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Copa Libertadores 2025",
+  "tipo": "copa",
+  "id_gestion": 1,
+  "fecha_inicio": "2025-04-15T00:00:00Z",
+  "fecha_fin": "2025-12-15T00:00:00Z",
+  "c_estado": "programado"
+
+}
+
+### Crear un Campeonato - Torneo
+POST http://localhost:8080/api/campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Campeonato Integración 2025",
+  "tipo": "liga",
+  "id_gestion": 1,
+  "fecha_inicio": "2025-05-01T00:00:00Z",
+  "fecha_fin": "2025-05-31T00:00:00Z",
+  "c_estado": "en_curso"
+}
+
+### Crear un Campeonato - Amistoso
+POST http://localhost:8080/api/campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Torneo Amistoso Municipal",
+  "tipo": "amistoso",
+  "id_gestion": 1,
+  "c_estado": "programado"
+}
+
+### Get campeonato por ID
+GET http://localhost:8080/api/campeonato/1
+Content-Type: application/json
+Accept: application/json
+
+### Get campeonato por ID - Por body
+POST http://localhost:8080/api/campeonato/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Obtener campeonato con relaciones (partidos, grupos, categorías)
+GET http://localhost:8080/api/campeonato/relaciones/1
+Accept: application/json
+
+### Obtener campeonatos por tipo - Liga
+GET http://localhost:8080/api/campeonato/tipo/liga
+Accept: application/json
+
+### Obtener campeonatos por tipo - Copa
+GET http://localhost:8080/api/campeonato/tipo/copa
+Accept: application/json
+
+### Obtener campeonatos por tipo - Torneo
+GET http://localhost:8080/api/campeonato/tipo/torneo
+Accept: application/json
+
+### Obtener campeonatos por estado - Programado
+GET http://localhost:8080/api/campeonato/estado/programado
+Accept: application/json
+
+### Obtener campeonatos por estado - En curso
+GET http://localhost:8080/api/campeonato/estado/en_curso
+Accept: application/json
+
+### Obtener campeonatos por estado - Finalizado
+GET http://localhost:8080/api/campeonato/estado/finalizado
+Accept: application/json
+
+### Obtener campeonatos por gestión
+GET http://localhost:8080/api/campeonato/gestion/1
+Accept: application/json
+
+### Editar campeonato - Cambiar nombre y estado
+PUT http://localhost:8080/api/campeonato/1
+Content-Type: application/json
+
+{
+  "nombre": "Liga Profesional 2025 Actualizada",
+  "c_estado": "en_curso"
+}
+
+### Editar campeonato - Cambiar fechas
+PUT http://localhost:8080/api/campeonato/2
+Content-Type: application/json
+
+{
+  "fecha_inicio": "2025-04-20T00:00:00Z",
+  "fecha_fin": "2025-12-20T00:00:00Z"
+}
+
+### Editar campeonato - Finalizar
+PUT http://localhost:8080/api/campeonato/3
+Content-Type: application/json
+
+{
+  "c_estado": "finalizado"
+}
+
+### Editar campeonato - Suspender
+PUT http://localhost:8080/api/campeonato/4
+Content-Type: application/json
+
+{
+  "c_estado": "suspendido"
+}
+
+### Eliminar logicamente un campeonato
+DELETE http://localhost:8080/api/campeonato/4
+Accept: application/json
+
+### Eliminar otro campeonato
+DELETE http://localhost:8080/api/campeonato/3
+Accept: application/json

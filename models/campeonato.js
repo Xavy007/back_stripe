@@ -1,6 +1,6 @@
 'use strict';
 const {Model} = require('sequelize');
-const CAMPEONATO_TIPOS = ['liga', 'copa', 'amistoso', 'torneo'];
+const CAMPEONATO_TIPOS = ['campeonato','liga', 'copa', 'amistoso', 'torneo'];
 const C_ESTADOS = ['programado', 'en_curso', 'finalizado', 'suspendido', 'cancelado'];
 
 module.exports = (sequelize, DataTypes) => {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.STRING,
       allowNull:false
     },
-    tipo: { type: DataTypes.ENUM(...CAMPEONATO_TIPOS), allowNull: false, defaultValue: 'liga' },
+    tipo: { type: DataTypes.ENUM(...CAMPEONATO_TIPOS), allowNull: false, defaultValue: 'campeonato' },
     id_gestion: {
       type:DataTypes.INTEGER,
       allowNull:false,
@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Campeonato',
+    tableName: 'Campeonatos'
   });
   return Campeonato;
 };

@@ -1,0 +1,105 @@
+### Obtener todas las gestiones activas
+GET http://localhost:8080/api/gestion-campeonato/
+Accept: application/json
+
+### Obtener todas las gestiones (incluyendo inactivas)
+GET http://localhost:8080/api/gestion-campeonato/todas
+Accept: application/json
+
+### Crear una Gestión - Año Actual
+POST http://localhost:8080/api/gestion-campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2025",
+  "gestion": 2025,
+  "descripcion": "Gestión de campeonatos del año 2025"
+}
+
+### Crear una Gestión - Año Anterior
+POST http://localhost:8080/api/gestion-campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2024",
+  "gestion": 2024,
+  "descripcion": "Gestión de campeonatos del año 2024"
+}
+
+### Crear una Gestión - Año Siguiente
+POST http://localhost:8080/api/gestion-campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2026",
+  "gestion": 2026,
+  "descripcion": "Gestión de campeonatos del año 2026"
+}
+
+### Crear una Gestión sin descripción
+POST http://localhost:8080/api/gestion-campeonato
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2023",
+  "gestion": 2023
+}
+
+### Get gestión por ID
+GET http://localhost:8080/api/gestion-campeonato/1
+Content-Type: application/json
+Accept: application/json
+
+### Get gestión por ID - Por body
+POST http://localhost:8080/api/gestion-campeonato/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Obtener gestión por año
+GET http://localhost:8080/api/gestion-campeonato/ano/2025
+Accept: application/json
+
+### Obtener gestión por año - 2024
+GET http://localhost:8080/api/gestion-campeonato/ano/2024
+Accept: application/json
+
+### Obtener gestión con campeonatos
+GET http://localhost:8080/api/gestion-campeonato/campeonatos/1
+Accept: application/json
+
+### Editar gestión - Cambiar nombre
+PUT http://localhost:8080/api/gestion-campeonato/1
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2025 Actualizada"
+}
+
+### Editar gestión - Cambiar descripción
+PUT http://localhost:8080/api/gestion-campeonato/2
+Content-Type: application/json
+
+{
+  "descripcion": "Nueva descripción para la gestión 2024"
+}
+
+### Editar gestión - Cambiar nombre y descripción
+PUT http://localhost:8080/api/gestion-campeonato/3
+Content-Type: application/json
+
+{
+  "nombre": "Gestión 2026 Modificada",
+  "descripcion": "Descripción actualizada para 2026"
+}
+
+### Eliminar logicamente una gestión
+DELETE http://localhost:8080/api/gestion-campeonato/3
+Accept: application/json
+
+### Eliminar otra gestión
+DELETE http://localhost:8080/api/gestion-campeonato/4
+Accept: application/json

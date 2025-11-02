@@ -1,26 +1,21 @@
-### Test ServiceA through Gateway (Round Robin Load Balancing)
+### Obtener Usuarios
 GET http://localhost:8080/api/personas/getUsuarios
 Accept: application/json
 
-
-### Test ServiceA through Gateway (Round Robin Load Balancing)
+### Obtener nacionalidades
 GET http://localhost:8080/api/nacionalidad/
 Accept: application/json
 
-
-
-
-### Test ServiceA through Gateway (Round Robin Load Balancing)
+### Agregar una Nacionalidad
 POST http://localhost:8080/api/nacionalidad
 Content-Type: application/json
 
 {
-  "pais": "Chile",
-  "estado": false
+  "pais": "Paraguay",
+  "estado": true
 }
 
-
-### Test ServiceA through Gateway (Round Robin Load Balancing)
+### Editar una nacionalidad
 PUT http://localhost:8080/api/nacionalidad/1
 Content-Type: application/json
 
@@ -28,12 +23,9 @@ Content-Type: application/json
   "pais": "Bolivia"
 }
 
-### Delete
+### Eliminar logicamente una nacionalidad
 DELETE http://localhost:8080/api/nacionalidad/3
 Accept: application/json
-
-
-
 
 
 ###Get by id nacionalidad
@@ -62,8 +54,8 @@ Content-Type: application/json
     "ci":"71506101",
     "genero":"masculino",
     "fnac":"1993-07-10",
-    "ap": "Gómez",
-    "am":"Avila",
+    "ap": "Alcoba",
+    "am":"Gutierrez",
     "id_nacionalidad": 1
   },
   "usuario": {

@@ -13,13 +13,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       tipo: {
-        type: Sequelize.ENUM('campeonato','liga', 'copa', 'relampago', 'amistoso'),
+        type: Sequelize.ENUM('campeonato','liga', 'copa', 'relampago', 'amistoso', 'torneo'),
         allowNull: false
       },
       id_gestion: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique:true,
         references: {
           model: 'GestionCampeonatos',
           key: 'id_gestion'
@@ -34,9 +33,9 @@ module.exports = {
         type: Sequelize.DATE
       },
       c_estado: {
-        type: Sequelize.ENUM('planificado', 'en_curso', 'finalizado'),
+        type: Sequelize.ENUM('programado', 'en_curso', 'finalizado', 'suspendido', 'cancelado'),
         allowNull: false,
-        defaultValue: 'planificado'
+        defaultValue: 'programado'
       },
       estado: {
         type: Sequelize.BOOLEAN

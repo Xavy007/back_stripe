@@ -1,0 +1,130 @@
+### Obtener todos los equipos activos
+GET http://localhost:8080/api/equipo/
+Accept: application/json
+
+### Obtener todos los equipos (incluyendo inactivos)
+GET http://localhost:8080/api/equipo/todos
+Accept: application/json
+
+### Crear un Equipo
+POST http://localhost:8080/api/equipo
+Content-Type: application/json
+
+{
+  "nombre": "Equipo A - U-12",
+  "id_club": 1,
+  "id_categoria": 1
+}
+
+### Crear otro Equipo
+POST http://localhost:8080/api/equipo
+Content-Type: application/json
+
+{
+  "nombre": "Equipo B - U-14",
+  "id_club": 1,
+  "id_categoria": 2
+}
+
+### Crear Equipo de otro club
+POST http://localhost:8080/api/equipo
+Content-Type: application/json
+
+{
+  "nombre": "Equipo Elite - U-12",
+  "id_club": 2,
+  "id_categoria": 1
+}
+
+### Crear Equipo de otro club y categoría
+POST http://localhost:8080/api/equipo
+Content-Type: application/json
+
+{
+  "nombre": "Equipo Pro - U-16",
+  "id_club": 2,
+  "id_categoria": 3
+}
+
+### Get equipo por ID
+GET http://localhost:8080/api/equipo/1
+Content-Type: application/json
+Accept: application/json
+
+### Get equipo por ID - Por body
+POST http://localhost:8080/api/equipo/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Obtener equipos por club
+GET http://localhost:8080/api/equipo/club/1
+Accept: application/json
+
+### Obtener equipos por club - Club 2
+GET http://localhost:8080/api/equipo/club/2
+Accept: application/json
+
+### Obtener equipos por categoría
+GET http://localhost:8080/api/equipo/categoria/1
+Accept: application/json
+
+### Obtener equipos por categoría - Categoría 2
+GET http://localhost:8080/api/equipo/categoria/2
+Accept: application/json
+
+### Obtener equipos por club y categoría
+GET http://localhost:8080/api/equipo/club/1/categoria/1
+Accept: application/json
+
+### Obtener equipos por club y categoría - Club 2, Categoría 3
+GET http://localhost:8080/api/equipo/club/2/categoria/3
+Accept: application/json
+
+### Obtener equipo con relaciones (participaciones, tabla posiciones, historial)
+GET http://localhost:8080/api/equipo/relaciones/1
+Accept: application/json
+
+### Editar equipo - Cambiar nombre
+PUT http://localhost:8080/api/equipo/1
+Content-Type: application/json
+
+{
+  "nombre": "Equipo A - U-12 Actualizado"
+}
+
+### Editar equipo - Cambiar categoría
+PUT http://localhost:8080/api/equipo/2
+Content-Type: application/json
+
+{
+  "id_categoria": 3
+}
+
+### Editar equipo - Cambiar club
+PUT http://localhost:8080/api/equipo/3
+Content-Type: application/json
+
+{
+  "id_club": 1
+}
+
+### Editar equipo - Cambiar nombre y categoría
+PUT http://localhost:8080/api/equipo/4
+Content-Type: application/json
+
+{
+  "nombre": "Equipo Pro - U-18 Actualizado",
+  "id_categoria": 4
+}
+
+### Eliminar logicamente un equipo
+DELETE http://localhost:8080/api/equipo/3
+Accept: application/json
+
+### Eliminar otro equipo
+DELETE http://localhost:8080/api/equipo/4
+Accept: application/json

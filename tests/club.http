@@ -1,0 +1,99 @@
+### Obtener todos los clubes activos
+GET http://localhost:8080/api/club/
+Accept: application/json
+
+### Obtener todos los clubes (incluyendo inactivos)
+GET http://localhost:8080/api/club/todos
+Accept: application/json
+
+### Crear un Club
+POST http://localhost:8080/api/club
+Content-Type: application/json
+
+{
+  "nombre": "Club San Roque",
+  "acronimo": "CSR",
+  "direccion": "Calle Principal 123",
+  "email": "info@clubmunicipal.com",
+  "telefono": "+591 4 1234567",
+  "redes_sociales": "@clubmunicipal",
+  "personeria": true
+}
+
+### Crear otro Club
+POST http://localhost:8080/api/club
+Content-Type: application/json
+
+{
+  "nombre": "Deportivo Juventud",
+  "acronimo": "DJV",
+  "direccion": "Av. Secundaria 456",
+  "email": "contacto@juventud.com",
+  "telefono": "+591 4 9876543",
+  "logo": "http://example.com/logo.png",
+  "personeria": false
+}
+
+### Crear Club mínimo (solo nombre)
+POST http://localhost:8080/api/club
+Content-Type: application/json
+
+{
+  "nombre": "Club Simple"
+}
+
+### Get club por ID
+GET http://localhost:8080/api/club/1
+Content-Type: application/json
+Accept: application/json
+
+### Get club por ID - Por body
+POST http://localhost:8080/api/club/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Editar un club
+PUT http://localhost:8080/api/club/1
+Content-Type: application/json
+
+{
+  "nombre": "Club Deportivo Municipal Actualizado",
+  "email": "newemail@clubmunicipal.com",
+  "telefono": "+591 4 1111111"
+}
+
+### Editar solo dirección
+PUT http://localhost:8080/api/club/2
+Content-Type: application/json
+
+{
+  "direccion": "Nueva Dirección 789"
+}
+
+### Editar solo acrónimo
+PUT http://localhost:8080/api/club/3
+Content-Type: application/json
+
+{
+  "acronimo": "ABC"
+}
+
+### Editar solo logo
+PUT http://localhost:8080/api/club/1
+Content-Type: application/json
+
+{
+  "logo": "http://example.com/nuevo-logo.png"
+}
+
+### Eliminar logicamente un club
+DELETE http://localhost:8080/api/club/3
+Accept: application/json
+
+### Eliminar otro club
+DELETE http://localhost:8080/api/club/2
+Accept: application/json

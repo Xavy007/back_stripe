@@ -1,0 +1,122 @@
+### Obtener todas las categorías activas
+GET http://localhost:8080/api/categoria/
+Accept: application/json
+
+### Obtener todas las categorías (incluyendo inactivas)
+GET http://localhost:8080/api/categoria/todas
+Accept: application/json
+
+### Crear una Categoría - Masculino
+POST http://localhost:8080/api/categoria
+Content-Type: application/json
+
+{
+  "nombre": "Categoría U-12 Masculino",
+  "genero": "masculino",
+  "edad_inicio": 10,
+  "edad_limite": 12,
+  "descripcion": "Categoría para niños de 10 a 12 años"
+}
+
+### Crear una Categoría - Femenino
+POST http://localhost:8080/api/categoria
+Content-Type: application/json
+
+{
+  "nombre": "Categoría U-14 Femenino",
+  "genero": "femenino",
+  "edad_inicio": 12,
+  "edad_limite": 14,
+  "descripcion": "Categoría para niñas de 12 a 14 años"
+}
+
+### Crear una Categoría - Mixto
+POST http://localhost:8080/api/categoria
+Content-Type: application/json
+
+{
+  "nombre": "Categoría U-16 Mixto",
+  "genero": "mixto",
+  "edad_inicio": 14,
+  "edad_limite": 16,
+  "descripcion": "Categoría mixta de 14 a 16 años"
+}
+
+### Crear una Categoría - Sin edad límite
+POST http://localhost:8080/api/categoria
+Content-Type: application/json
+
+{
+  "nombre": "Categoría Mayores",
+  "genero": "masculino",
+  "edad_inicio": 18,
+  "descripcion": "Categoría para mayores de 18 años"
+}
+
+### Get categoría por ID
+GET http://localhost:8080/api/categoria/1
+Content-Type: application/json
+Accept: application/json
+
+### Get categoría por ID - Por body
+POST http://localhost:8080/api/categoria/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 2
+}
+
+### Obtener categorías por género - Masculino
+GET http://localhost:8080/api/categoria/genero/masculino
+Accept: application/json
+
+### Obtener categorías por género - Femenino
+GET http://localhost:8080/api/categoria/genero/femenino
+Accept: application/json
+
+### Obtener categorías por género - Mixto
+GET http://localhost:8080/api/categoria/genero/mixto
+Accept: application/json
+
+### Obtener categorías por edad
+GET http://localhost:8080/api/categoria/edad/12
+Accept: application/json
+
+### Obtener categorías por edad - 15 años
+GET http://localhost:8080/api/categoria/edad/15
+Accept: application/json
+
+### Editar una categoría
+PUT http://localhost:8080/api/categoria/1
+Content-Type: application/json
+
+{
+  "nombre": "Categoría U-12 Masculino Actualizada",
+  "edad_limite": 13,
+  "descripcion": "Categoría actualizada de 10 a 13 años"
+}
+
+### Editar solo el género de una categoría
+PUT http://localhost:8080/api/categoria/2
+Content-Type: application/json
+
+{
+  "genero": "mixto"
+}
+
+### Editar solo la edad límite
+PUT http://localhost:8080/api/categoria/3
+Content-Type: application/json
+
+{
+  "edad_limite": 17
+}
+
+### Eliminar logicamente una categoría
+DELETE http://localhost:8080/api/categoria/3
+Accept: application/json
+
+### Eliminar logicamente otra categoría
+DELETE http://localhost:8080/api/categoria/1
+Accept: application/json
