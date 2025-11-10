@@ -10,10 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull:false,
+        defaultValue:true
       },
       freg: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue:Sequelize.NOW
       },
       email: {
         type: Sequelize.STRING,
@@ -25,7 +28,7 @@ module.exports = {
         allowNull:false
       },
       rol: {
-         type: Sequelize.ENUM('admin', 'presidente', 'secretario', 'presidenteclub', 'representante'),
+         type: Sequelize.ENUM('admin', 'presidente', 'secretario', 'presidenteclub', 'representante','juez'),
           allowNull: false
       },
       verificado: {

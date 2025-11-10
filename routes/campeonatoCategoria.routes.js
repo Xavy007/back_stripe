@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const autenticar = require('../middleware/authMiddleware');
+const autorizar = require('../middleware/roleMiddleware');
 const CampeonatoCategoriaController = require('../controllers/campeonatoCategoriaController');
 
 // CRUD Routes

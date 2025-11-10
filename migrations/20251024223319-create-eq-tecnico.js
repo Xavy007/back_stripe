@@ -12,7 +12,6 @@ module.exports = {
       id_persona: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique:true,
         references: {
           model: 'Personas',
           key: 'id_persona'
@@ -23,7 +22,6 @@ module.exports = {
       id_categoria: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique:true,
         references: {
           model: 'Categorias',
           key: 'id_categoria'
@@ -34,7 +32,6 @@ module.exports = {
       id_club: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique:true,
         references: {
           model: 'Clubes',
           key: 'id_club'

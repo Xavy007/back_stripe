@@ -1,8 +1,6 @@
 const GestionCampeonatoRepository = require('../repositories/gestioncampeonatoRepository');
 
-// CREATE
 const crearGestion = async (data) => {
-    // Validaciones de campos obligatorios
     if (!data.nombre || data.nombre.trim() === '') {
         throw new Error('El nombre de la gestión es obligatorio');
     }
@@ -11,12 +9,10 @@ const crearGestion = async (data) => {
         throw new Error('El año de gestión es obligatorio');
     }
     
-    // Validar que gestion sea un número entero
     if (!Number.isInteger(data.gestion)) {
         throw new Error('El año de gestión debe ser un número entero');
     }
     
-    // Validar rango de años
     const currentYear = new Date().getFullYear();
     const minYear = currentYear - 2;
     const maxYear = currentYear + 1;
@@ -25,7 +21,6 @@ const crearGestion = async (data) => {
         throw new Error(`La gestión debe estar entre ${minYear} y ${maxYear}`);
     }
     
-    // Validar que no exista una gestión con el mismo año
     const gestionExistente = await GestionCampeonatoRepository.obtenerGestionPorAno(data.gestion);
     if (gestionExistente) {
         throw new Error(`Ya existe una gestión para el año ${data.gestion}`);
@@ -46,7 +41,6 @@ const crearGestion = async (data) => {
     }
 };
 
-// READ - Obtener todas las gestiones activas
 const obtenerGestiones = async () => {
     try {
         const gestiones = await GestionCampeonatoRepository.obtenerGestiones();

@@ -162,12 +162,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     rol: {
-      type: DataTypes.ENUM('admin', 'presidente', 'secretario', 'presidenteclub', 'representante'),
+      type: DataTypes.ENUM('admin', 'presidente', 'secretario', 'presidenteclub', 'representante','juez'),
       allowNull: false
     },
     failed_attempts: { type: DataTypes.INTEGER, defaultValue: 0, allowNull: false },
     locked_until: { type: DataTypes.DATE, allowNull: true },
     verificado: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
+    estado: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
+
     id_persona: {
       type: DataTypes.INTEGER,
       allowNull: false,

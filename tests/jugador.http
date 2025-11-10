@@ -1,0 +1,404 @@
+### ============================================
+### JUGADORES - ENDPOINTS HTTP
+### ============================================
+
+### Obtener todos los jugadores activos
+GET http://localhost:8080/api/jugadores
+Accept: application/json
+
+### Obtener todos los jugadores (incluyendo inactivos)
+GET http://localhost:8080/api/jugadores/todos
+Accept: application/json
+
+### ============================================
+### CREAR JUGADORES CON PERSONA Y DIRECCIÓN
+### ============================================
+
+### Crear Jugador 1 - Completo con persona y dirección
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "7150693",
+    "nombre": "Javier",
+    "ap": "Alcoba",
+    "am": "Gutiérrez",
+    "fnac": "1993-10-07",
+    "id_nacionalidad": 1,
+    "genero": "masculino",
+    "foto": "https://example.com/foto1.jpg"
+  },
+  "datosJugador": {
+    "id_club": 1,
+    "estatura": 185
+  },
+  "datosDireccion": {
+    "calle": "Avenida Principal",
+    "numero": "123",
+    "piso": "2",
+    "departamento": "A",
+    "localidad": "La Paz",
+    "provincia": "La Paz",
+    "codigo_postal": "10001",
+    "pais": "Bolivia",
+    "telefono": "+591 2 2345678",
+    "celular": "+591 70123456",
+    "correo": "javier.alcoba@email.com"
+  }
+}
+
+### Crear Jugador 2 - María López
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "87654321",
+    "nombre": "María",
+    "ap": "López",
+    "am": "Martínez",
+    "fnac": "1995-08-20",
+    "id_nacionalidad": 1,
+    "genero": "femenino"
+  },
+  "datosJugador": {
+    "id_club": 2,
+    "estatura": 172
+  },
+  "datosDireccion": {
+    "calle": "Calle Comercial",
+    "numero": "456",
+    "localidad": "Cochabamba",
+    "provincia": "Cochabamba",
+    "codigo_postal": "10002",
+    "pais": "Bolivia",
+    "telefono": "+591 4 4567890",
+    "celular": "+591 71234567",
+    "correo": "maria.lopez@email.com"
+  }
+}
+
+### Crear Jugador 3 - Carlos Ruiz
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "11223344",
+    "nombre": "Carlos",
+    "ap": "Ruiz",
+    "fnac": "1988-03-10",
+    "id_nacionalidad": 2,
+    "genero": "masculino"
+  },
+  "datosJugador": {
+    "id_club": 3,
+    "estatura": 178
+  },
+  "datosDireccion": {
+    "calle": "Pasaje Norte",
+    "numero": "789",
+    "piso": "1",
+    "localidad": "Santa Cruz de la Sierra",
+    "provincia": "Santa Cruz",
+    "codigo_postal": "10003",
+    "pais": "Bolivia",
+    "celular": "+591 72345678",
+    "correo": "carlos.ruiz@email.com"
+  }
+}
+
+### Crear Jugador 4 - Delantero destacado
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "55667788",
+    "nombre": "Diego",
+    "ap": "Fernández",
+    "am": "García",
+    "fnac": "1996-05-15",
+    "id_nacionalidad": 1,
+    "genero": "masculino",
+    "foto": "https://example.com/diego.jpg"
+  },
+  "datosJugador": {
+    "id_club": 1,
+    "estatura": 182
+  },
+  "datosDireccion": {
+    "calle": "Avenida Arce",
+    "numero": "250",
+    "piso": "5",
+    "departamento": "B",
+    "localidad": "La Paz",
+    "provincia": "La Paz",
+    "codigo_postal": "10001",
+    "pais": "Bolivia",
+    "telefono": "+591 2 2111111",
+    "celular": "+591 73456789",
+    "correo": "diego.fernandez@email.com"
+  }
+}
+
+### Crear Jugador 5 - Portero
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "99887766",
+    "nombre": "Roberto",
+    "ap": "Silva",
+    "am": "Campos",
+    "fnac": "1990-12-01",
+    "id_nacionalidad": 1,
+    "genero": "masculino"
+  },
+  "datosJugador": {
+    "id_club": 2,
+    "estatura": 188
+  },
+  "datosDireccion": {
+    "calle": "Calle Mayor",
+    "numero": "321",
+    "localidad": "Cochabamba",
+    "provincia": "Cochabamba",
+    "codigo_postal": "10002",
+    "pais": "Bolivia",
+    "celular": "+591 74567890",
+    "correo": "roberto.silva@email.com"
+  }
+}
+
+### ============================================
+### OBTENER JUGADORES
+### ============================================
+
+### Obtener jugador por ID
+GET http://localhost:8080/api/jugadores/1
+Accept: application/json
+
+### Obtener jugador por ID - 2
+GET http://localhost:8080/api/jugadores/2
+Accept: application/json
+
+### Obtener jugadores de un club específico
+GET http://localhost:8080/api/jugadores/club/1
+Accept: application/json
+
+### Obtener jugadores del club 2
+GET http://localhost:8080/api/jugadores/club/2
+Accept: application/json
+
+### Obtener personas sin ser jugador
+GET http://localhost:8080/api/jugadores/personas-sin-jugador
+Accept: application/json
+
+### Obtener jugadores por nombre (búsqueda)
+GET http://localhost:8080/api/jugadores/buscar/nombre?nombre=Javier
+Accept: application/json
+
+### Obtener jugadores por nombre - Diego
+GET http://localhost:8080/api/jugadores/buscar/nombre?nombre=Diego
+Accept: application/json
+
+### Obtener jugadores por nombre - María
+GET http://localhost:8080/api/jugadores/buscar/nombre?nombre=María
+Accept: application/json
+
+### Obtener jugadores por rango de estatura (170-180 cm)
+GET http://localhost:8080/api/jugadores/buscar/estatura?estatura_minima=170&estatura_maxima=180
+Accept: application/json
+
+### Obtener jugadores por rango de estatura (180-190 cm)
+GET http://localhost:8080/api/jugadores/buscar/estatura?estatura_minima=180&estatura_maxima=190
+Accept: application/json
+
+### Obtener jugadores altos (185-250 cm)
+GET http://localhost:8080/api/jugadores/buscar/estatura?estatura_minima=185&estatura_maxima=250
+Accept: application/json
+
+### Obtener jugadores con filtros múltiples
+GET http://localhost:8080/api/jugadores?club=1&nombre=Javier
+Accept: application/json
+
+### ============================================
+### CREAR JUGADOR PARA PERSONA EXISTENTE
+### ============================================
+
+### Crear jugador para persona existente ID 5
+POST http://localhost:8080/api/jugadores/persona/1
+Content-Type: application/json
+
+{
+  "datosJugador": {
+    "id_club": 1,
+    "estatura": 180
+  }
+}
+
+### ============================================
+### ACTUALIZAR JUGADORES
+### ============================================
+
+### Actualizar estatura del jugador
+PUT http://localhost:8080/api/jugadores/1
+Content-Type: application/json
+
+{
+  "estatura": 187
+}
+
+### Actualizar club del jugador
+PUT http://localhost:8080/api/jugadores/2
+Content-Type: application/json
+
+{
+  "id_club": 3
+}
+
+### Actualizar estatura y club
+PUT http://localhost:8080/api/jugadores/3
+Content-Type: application/json
+
+{
+  "estatura": 180,
+  "id_club": 1
+}
+
+### ============================================
+### ACTUALIZAR DIRECCIONES
+### ============================================
+
+### Actualizar dirección del jugador 1
+PUT http://localhost:8080/api/jugadores/1/direccion
+Content-Type: application/json
+
+{
+  "calle": "Avenida 6 de Agosto",
+  "numero": "500",
+  "piso": "3",
+  "departamento": "C",
+  "localidad": "La Paz",
+  "provincia": "La Paz",
+  "codigo_postal": "10001",
+  "pais": "Bolivia",
+  "telefono": "+591 2 2999999",
+  "celular": "+591 70999999",
+  "correo": "javier.nuevo@email.com"
+}
+
+### Actualizar solo celular y correo del jugador 2
+PUT http://localhost:8080/api/jugadores/2/direccion
+Content-Type: application/json
+
+{
+  "celular": "+591 71999999",
+  "correo": "maria.nuevo@email.com"
+}
+
+### Actualizar dirección del jugador 3
+PUT http://localhost:8080/api/jugadores/3/direccion
+Content-Type: application/json
+
+{
+  "calle": "Avenida Cristóbal Colón",
+  "numero": "555",
+  "localidad": "Santa Cruz de la Sierra",
+  "provincia": "Santa Cruz",
+  "codigo_postal": "10003",
+  "pais": "Bolivia",
+  "celular": "+591 72999999",
+  "correo": "carlos.nuevo@email.com"
+}
+
+### ============================================
+### OBTENER DIRECCIONES
+### ============================================
+
+### Obtener dirección del jugador 1
+GET http://localhost:8080/api/jugadores/1/direccion
+Accept: application/json
+
+### Obtener dirección del jugador 2
+GET http://localhost:8080/api/jugadores/2/direccion
+Accept: application/json
+
+### Obtener dirección del jugador 3
+GET http://localhost:8080/api/jugadores/3/direccion
+Accept: application/json
+
+### Obtener jugador con su dirección completa
+GET http://localhost:8080/api/jugadores/1/completo
+Accept: application/json
+
+### Obtener jugador con su dirección completa - ID 2
+GET http://localhost:8080/api/jugadores/2/completo
+Accept: application/json
+
+### ============================================
+### OBTENER JUGADORES POR LOCALIDAD
+### ============================================
+
+### Obtener jugadores en La Paz
+GET http://localhost:8080/api/jugadores/localidad/La%20Paz
+Accept: application/json
+
+### Obtener jugadores en Cochabamba
+GET http://localhost:8080/api/jugadores/localidad/Cochabamba
+Accept: application/json
+
+### Obtener jugadores en Santa Cruz de la Sierra
+GET http://localhost:8080/api/jugadores/localidad/Santa%20Cruz%20de%20la%20Sierra
+Accept: application/json
+
+### ============================================
+### OBTENER JUGADORES POR PROVINCIA
+### ============================================
+
+### Obtener jugadores en provincia La Paz
+GET http://localhost:8080/api/jugadores/provincia/La%20Paz
+Accept: application/json
+
+### Obtener jugadores en provincia Cochabamba
+GET http://localhost:8080/api/jugadores/provincia/Cochabamba
+Accept: application/json
+
+### ============================================
+### ELIMINAR JUGADORES
+### ============================================
+
+### Eliminar lógicamente el jugador 5
+DELETE http://localhost:8080/api/jugadores/5
+Accept: application/json
+
+### Eliminar lógicamente el jugador 4
+DELETE http://localhost:8080/api/jugadores/4
+Accept: application/json
+
+### ============================================
+### BÚSQUEDAS AVANZADAS
+### ============================================
+
+### Obtener jugadores altos de un club específico
+GET http://localhost:8080/api/jugadores?club=1&estatura_minima=180
+Accept: application/json
+
+### Obtener jugadores de un rango de estatura en un club
+GET http://localhost:8080/api/jugadores?club=2&estatura_minima=170&estatura_maxima=180
+Accept: application/json
+
+### Obtener jugadores por nombre y club
+GET http://localhost:8080/api/jugadores?nombre=Javier&club=1
+Accept: application/json
+
+### Obtener todos los jugadores con sus direcciones
+GET http://localhost:8080/api/jugadores/completo
+Accept: application/json
+
+### Obtener jugadores activos con direcciones en La Paz
+GET http://localhost:8080/api/jugadores?localidad=La%20Paz&estado=true
+Accept: application/json

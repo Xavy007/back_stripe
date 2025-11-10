@@ -1,5 +1,5 @@
 ### Obtener Usuarios
-GET http://localhost:8080/api/personas/getUsuarios
+GET http://localhost:8080/api/persona/getUsuarios
 Accept: application/json
 
 ### Obtener nacionalidades
@@ -11,7 +11,7 @@ POST http://localhost:8080/api/nacionalidad
 Content-Type: application/json
 
 {
-  "pais": "Paraguay",
+  "pais": "Argentina",
   "estado": true
 }
 
@@ -75,5 +75,5 @@ Content-Type: application/json
 
 {
   "email": "javier@gmail.com",
-  "password": "secreta12345"
+  "password": "Contrasena12345"
 }

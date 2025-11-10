@@ -1,6 +1,5 @@
 # Variables (pega el token aquí después del login)
-@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjozLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc2MTAyMTY2NSwiZXhwIjoxNzYxMDI4ODY1fQ.Bf01UhLMHbNJbptbUBjp_PttMDO2mnd6QkdDIDcTk4w
-
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoxLCJlbWFpbCI6Imp1YW5AZXhhbXBsZS5jb20iLCJyb2wiOiJwcmVzaWRlbnRlIiwiaWRfcGVyc29uYSI6Miwibm9tYnJlIjoiSnVhbiIsImFwZWxsaWRvIjoiUMOpcmV6IiwiaWF0IjoxNzYyMTIxNDczLCJleHAiOjE3NjI3MjYyNzN9.oVHYXilGFSlDFJPhDBvAQrlQ9A7kdWAqbKFjYpNORZM
 ### Login - obtener access y refresh (POST /api/auth/login)
 POST http://localhost:8080/api/auth/login
 Content-Type: application/json
@@ -9,6 +8,12 @@ Content-Type: application/json
   "email": "javier@gmail.com",
   "password": "secreta12345"
 }
+
+
+
+### PASO 2: LOGOUT (usar el token)
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer {{token}}
 
 ### Listar nacionalidades (GET) - usar Authorization Bearer
 GET http://localhost:8080/api/nacionalidad/
@@ -20,11 +25,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "pais": "Colombia"
+  "pais": "Ecuador"
 }
 
 ### Obtener por id (GET)
-GET http://localhost:8080/api/nacionalidades/1
+GET http://localhost:8080/api/nacionalidad/getbyId/1
 Authorization: Bearer {{token}}
 
 ### Refresh token (si tienes endpoint)

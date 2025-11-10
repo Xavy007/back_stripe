@@ -1,0 +1,325 @@
+### ============================================
+### PRUEBAS: VÍNCULO PERSONA-USUARIO
+### SIN TOKEN (SKIP_AUTH=true)
+### ============================================
+
+### PASO 1: Ver personas sin usuario asignado
+GET http://localhost:8080/api/vinculo/personas-sin-usuario
+
+### RESPUESTA ESPERADA:
+# {
+#   "success": true,
+#   "message": "3 personas sin usuario asignado",
+#   "data": [
+#     {
+#       "id_persona": 5,
+#       "nombre": "Juan",
+#       "apellido": "Pérez",
+#       "ci": "12345678",
+#       "email": "N/A",
+#       "estado": true
+#     },
+#     {
+#       "id_persona": 6,
+#       "nombre": "María",
+#       "apellido": "López",
+#       "ci": "87654321",
+#       "email": "N/A",
+#       "estado": true
+#     }
+#   ],
+#   "total": 2
+# }
+
+###
+
+### PASO 2: Crear usuario para persona con ID 5
+POST http://localhost:8080/api/vinculo/crear-usuario/1
+Content-Type: application/json
+
+{
+  "email": "javier@example.com",
+  "password": "Contrasena123456",
+  "rol": "admin"
+}
+
+### RESPUESTA EXITOSA:
+# Status: 201
+# {
+#   "success": true,
+#   "message": "Usuario creado exitosamente para la persona Juan Pérez",
+#   "data": {
+#     "id_usuario": 10,
+#     "email": "juan@example.com",
+#     "rol": "presidente",
+#     "id_persona": 5,
+#     "persona": {
+#       "id_persona": 5,
+#       "nombre": "Juan",
+#       "apellido": "Pérez",
+#       "ci": "12345678"
+#     }
+#   }
+# }
+
+###
+
+### PASO 3: Crear usuario para otra persona (ID 6)
+POST http://localhost:8080/api/vinculo/crear-usuario/6
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "password": "Contrasena654321",
+  "rol": "secretario"
+}
+
+### RESPUESTA EXITOSA:
+# Status: 201
+# {
+#   "success": true,
+#   "message": "Usuario creado exitosamente para la persona María López",
+#   "data": {
+#     "id_usuario": 11,
+#     "email": "maria@example.com",
+#     "rol": "secretario",
+#     "id_persona": 6,
+#     "persona": {
+#       "id_persona": 6,
+#       "nombre": "María",
+#       "apellido": "López",
+#       "ci": "87654321"
+#     }
+#   }
+# }
+
+###
+
+### PASO 4: Intentar crear usuario para la misma persona (ERROR)
+POST http://localhost:8080/api/vinculo/crear-usuario/5
+Content-Type: application/json
+
+{
+  "email": "otro@example.com",
+  "password": "OtraContrasena123456",
+  "rol": "secretario"
+}
+
+### RESPUESTA ERROR:
+# Status: 409 Conflict
+# {
+#   "success": false,
+#   "error": "Conflicto",
+#   "message": "Esta persona ya tiene un usuario asociado (ID: 10)"
+# }
+
+###
+
+### PASO 5: Crear usuario para persona inexistente (ERROR)
+POST http://localhost:8080/api/vinculo/crear-usuario/999
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Contrasena123456",
+  "rol": "secretario"
+}
+
+### RESPUESTA ERROR:
+# Status: 404 Not Found
+# {
+#   "success": false,
+#   "error": "Persona no encontrada",
+#   "message": "La persona con ID 999 no existe"
+# }
+
+###
+
+### PASO 6: Crear usuario con email inválido (ERROR)
+POST http://localhost:8080/api/vinculo/crear-usuario/7
+Content-Type: application/json
+
+{
+  "email": "email_invalido",
+  "password": "Contrasena123456",
+  "rol": "secretario"
+}
+
+### RESPUESTA ERROR:
+# Status: 400 Bad Request
+# {
+#   "success": false,
+#   "error": "Error al crear usuario",
+#   "message": "Error en validación: El email no es válido"
+# }
+
+###
+
+### PASO 7: Crear usuario con contraseña muy corta (ERROR)
+POST http://localhost:8080/api/vinculo/crear-usuario/7
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "short",
+  "rol": "secretario"
+}
+
+### RESPUESTA ERROR:
+# Status: 400 Bad Request
+# {
+#   "success": false,
+#   "error": "Error al crear usuario",
+#   "message": "Error en validación: La contraseña debe tener al menos 12 caracteres"
+# }
+
+###
+
+### PASO 8: Crear usuario con rol inválido (ERROR)
+POST http://localhost:8080/api/vinculo/crear-usuario/7
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Contrasena123456",
+  "rol": "rol_invalido"
+}
+
+### RESPUESTA ERROR:
+# Status: 400 Bad Request
+# {
+#   "success": false,
+#   "error": "Error al crear usuario",
+#   "message": "Error en validación: El rol debe ser uno de: admin, presidente, secretario, presidenteclub, representante"
+# }
+
+###
+
+### PASO 9: Verificar que personas ya no están disponibles
+GET http://localhost:8080/api/vinculo/personas-sin-usuario
+
+### RESPUESTA:
+# {
+#   "success": true,
+#   "message": "1 personas sin usuario asignado",
+#   "data": [
+#     {
+#       "id_persona": 7,
+#       "nombre": "Carlos",
+#       "apellido": "Ruiz",
+#       "ci": "11223344",
+#       "email": "N/A",
+#       "estado": true
+#     }
+#   ],
+#   "total": 1
+# }
+
+###
+
+### PASO 10: Hacer login con el usuario creado
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@example.com",
+  "password": "Contrasena123456"
+}
+
+### RESPUESTA EXITOSA:
+# {
+#   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "usuario": {
+#     "email": "juan@example.com",
+#     "rol": "presidente"
+#   },
+#   "refreshToken": "abc123..."
+# }
+
+###
+
+### PASO 11: LOGOUT después del login
+POST http://localhost:8080/api/auth/logout
+
+### RESPUESTA EXITOSA:
+# {
+#   "ok": true,
+#   "message": "Logout exitoso"
+# }
+
+
+### ============================================
+### FLUJO COMPLETO RESUMEN
+### ============================================
+
+1. ✅ GET /api/vinculo/personas-sin-usuario
+   └─ Ver personas disponibles
+
+2. ✅ POST /api/vinculo/crear-usuario/5
+   └─ Asignar usuario a persona ID 5
+
+3. ✅ POST /api/auth/login
+   └─ Login con el nuevo usuario
+
+4. ✅ POST /api/auth/logout
+   └─ Logout del usuario
+
+
+### ============================================
+### ROLES VÁLIDOS
+### ============================================
+
+- admin
+- presidente
+- secretario
+- presidenteclub
+- representante
+
+
+### ============================================
+### REQUISITOS DE VALIDACIÓN
+### ============================================
+
+EMAIL:
+✅ Formato válido: nombre@dominio.com
+❌ No válido: email_sin_arroba, correo@
+
+CONTRASEÑA:
+✅ Mínimo 12 caracteres
+❌ No válido: "123456" (muy corta)
+Ejemplo: "Contrasena123456"
+
+ROL:
+✅ Debe ser uno de los 5 roles válidos
+❌ No válido: "rol_personalizado", "user"
+
+ID_PERSONA:
+✅ Debe existir en la tabla personas
+✅ No debe tener usuario asignado ya
+❌ No válido: ID inexistente (404)
+❌ No válido: Persona con usuario ya (409)
+
+
+### ============================================
+### POSIBLES ERRORES Y SOLUCIONES
+### ============================================
+
+ERROR: "La persona con ID 999 no existe"
+CAUSA: El ID que pasaste no existe
+SOLUCIÓN: Usa GET /api/vinculo/personas-sin-usuario para ver IDs válidos
+
+ERROR: "Esta persona ya tiene un usuario asociado"
+CAUSA: Ya existe usuario para esa persona
+SOLUCIÓN: Usa GET /api/vinculo/personas-sin-usuario para ver personas sin usuario
+
+ERROR: "La contraseña debe tener al menos 12 caracteres"
+CAUSA: Password muy corta
+SOLUCIÓN: Envía password con mínimo 12 caracteres
+
+ERROR: "El email no es válido"
+CAUSA: Email mal formado
+SOLUCIÓN: Usa formato: nombre@dominio.com
+
+ERROR: "El rol debe ser uno de..."
+CAUSA: Rol no reconocido
+SOLUCIÓN: Usa uno de los roles válidos listados arriba

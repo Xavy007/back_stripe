@@ -1,0 +1,51 @@
+### REGISTRO - Crear Persona y Usuario juntos
+POST http://localhost:8080/api/auth/registro
+Content-Type: application/json
+
+{
+  "persona": {
+    "ci": "12345678",
+    "nombre": "Juan",
+    "ap": "Pérez",
+    "am": "García",
+    "fnac": "1990-05-15",
+    "id_nacionalidad": 1,
+    "genero": "masculino",
+    "foto": "https://example.com/foto.jpg"
+  },
+  "usuario": {
+    "email": "juan@example.com",
+    "password": "Contrasena123456",
+    "rol": "presidente"
+  }
+}
+
+### REGISTRO - Sin segundo apellido
+POST http://localhost:8080/api/auth/registro
+Content-Type: application/json
+
+{
+  "persona": {
+    "nombre": "Javier",
+    "ci":"71506101",
+    "genero":"masculino",
+    "fnac":"1993-07-10",
+    "ap": "Alcoba",
+    "am":"Gutierrez",
+    "id_nacionalidad": 1
+  },
+  "usuario": {
+    "email": "javier@gmail.com",
+    "password": "secreta12345",
+    "rol":"admin"
+  }
+}
+
+### LOGIN - Después de registrarse
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "juan@example.com",
+  "password": "Contrasena123456"
+}

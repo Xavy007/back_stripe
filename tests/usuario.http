@@ -1,0 +1,90 @@
+### LOGIN - Obtener token
+POST http://localhost:8080/api/usuario/login
+Content-Type: application/json
+
+{
+  "email": "javier@gmail.com",
+  "password": "Contrasena123456"
+}
+
+### PASO 2: LOGOUT (usar el token)
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### CREAR USUARIO - Solo admin
+POST http://localhost:8080/api/usuario
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "email": "javier@gmail.com",
+  "password": "Contrasena123456",
+  "rol": "admin",
+  "id_persona": 4,
+  "verificado": true
+}
+
+### OBTENER TODOS LOS USUARIOS - Solo admin
+GET http://localhost:8080/api/usuario
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIO POR ID
+GET http://localhost:8080/api/usuario/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIO POR EMAIL - Solo admin
+GET http://localhost:8080/api/usuario/email/admin@example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIOS POR ROL - Solo admin
+GET http://localhost:8080/api/usuario/rol/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIOS POR ROL - Presidente
+GET http://localhost:8080/api/usuario/rol/presidente
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIOS VERIFICADOS - Solo admin
+GET http://localhost:8080/api/usuario/estado/verificados
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### OBTENER USUARIOS BLOQUEADOS - Solo admin
+GET http://localhost:8080/api/usuario/estado/bloqueados
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### ACTUALIZAR USUARIO - El usuario o admin
+PUT http://localhost:8080/api/usuario/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "email": "presidente-nuevo@example.com",
+  "rol": "secretario"
+}
+
+### CAMBIAR CONTRASEÑA
+PUT http://localhost:8080/api/usuario/1/cambiar-contrasena
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "contraseniaAnterior": "Contrasena123456",
+  "contraseniaNueva": "NuevaContrasena123456"
+}
+
+### CAMBIAR VERIFICACIÓN - Solo admin
+PUT http://localhost:8080/api/usuario/3/verificacion
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "verificado": true
+}
+
+### DESBLOQUEAR USUARIO - Solo admin
+PUT http://localhost:8080/api/usuario/4/desbloquear
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+### ELIMINAR USUARIO - Solo admin
+DELETE http://localhost:8080/api/usuario/5
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...

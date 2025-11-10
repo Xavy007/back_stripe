@@ -1,18 +1,59 @@
-// src/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(403).json({ error: 'Token requerido' });
+const autenticar = (req, res, next) => {
+    try {
+             // ✅ AGREGAR ESTO (Para saltar autenticación en desarrollo)
+        if (process.env.SKIP_AUTH === 'true') {
+            console.log('⚠️ SKIP_AUTH activo - Saltando autenticación');
+            req.usuario = {
+                id_usuario: 1,
+                email: 'admin@example.com',
+                rol: 'admin'
+            };
+            return next();
+        }
+        // ✅ FIN SKIP_AUTH - El resto sigue igua
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token requerido. Use Authorization: Bearer <token>'
+            });
+        }
 
-  const token = authHeader.split(' ')[1];
-  if (!token) return res.status(403).json({ error: 'Token malformado' });
+        const partes = authHeader.split(' ');
+        if (partes.length !== 2 || partes[0] !== 'Bearer') {
+            return res.status(401).json({
+                success: false,
+                message: 'Token malformado. Formato: Bearer <token>'
+            });
+        }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Token inválido o expirado' });
-  }
+        const token = partes[1];
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'tu_secret_key');
+            req.usuario = decoded;
+            next();
+        } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Token expirado'
+                });
+            }
+            return res.status(401).json({
+                success: false,
+                message: 'Token inválido'
+            });
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error en autenticación'
+        });
+    }
 };
+
+module.exports = autenticar;

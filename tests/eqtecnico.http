@@ -1,0 +1,129 @@
+### ✅ CREAR EQUIPO TÉCNICO - OPCIÓN 1: Con nueva persona
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": true,
+  "ci": "9876543",
+  "nombre": "Carlos",
+  "ap": "Rodríguez",
+  "am": "Martínez",
+  "fnac": "1990-05-15",
+  "genero": "masculino",
+  "id_nacionalidad": 1,
+  "id_categoria": 1,
+  "id_club": 1,
+  "desde": "2025-01-01",
+  "hasta": "2027-12-31"
+}
+
+### ✅ CREAR EQUIPO TÉCNICO - OPCIÓN 2: Con persona existente
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": false,
+  "id_persona": 2,
+  "id_categoria": 2,
+  "id_club": 1,
+  "desde": "2025-01-01",
+  "hasta": "2026-12-31"
+}
+
+### ✅ CREAR EQUIPO TÉCNICO - Sin apellido materno
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": true,
+  "ci": "1234567",
+  "nombre": "Pedro",
+  "ap": "González",
+  "fnac": "1992-08-20",
+  "genero": "masculino",
+  "id_nacionalidad": 1,
+  "id_categoria": 1,
+  "id_club": 1
+}
+
+### ❌ ERROR: Faltan campos requeridos
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": true,
+  "ci": "1234567",
+  "nombre": "Pedro",
+  "ap": "González",
+  "id_nacionalidad": 1
+}
+
+### ❌ ERROR: Persona menor de 18 años
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": true,
+  "ci": "8765432",
+  "nombre": "Ana",
+  "ap": "Pérez",
+  "am": "Gómez",
+  "fnac": "2010-03-15",
+  "genero": "femenino",
+  "id_nacionalidad": 2,
+  "id_categoria": 1,
+  "id_club": 1,
+  "desde": "2025-01-01",
+  "hasta": "2027-12-31"
+}
+
+### ❌ ERROR: Fecha hasta antes de desde
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "crearPersona": false,
+  "id_persona": 1,
+  "id_categoria": 1,
+  "id_club": 1,
+  "desde": "2025-01-01",
+  "hasta": "2024-12-31"
+}
+
+### ❌ ERROR: No especifica crearPersona y tampoco id_persona
+POST http://localhost:8080/api/eqtecnicos
+Content-Type: application/json
+
+{
+  "id_categoria": 1,
+  "id_club": 1
+}
+
+### ✅ OBTENER TODOS
+GET http://localhost:8080/api/eqtecnicos
+
+### ✅ OBTENER POR ID
+GET http://localhost:8080/api/eqtecnicos/2
+
+### ✅ OBTENER POR ID COMPLETO (con relaciones)
+GET http://localhost:8080/api/eqtecnicos/1/completo
+
+### ✅ OBTENER POR CLUB Y CATEGORÍA
+GET http://localhost:8080/api/eqtecnicos/club/1/categoria/1
+
+### ✅ OBTENER POR PERSONA
+GET http://localhost:8080/api/eqtecnicos/persona/3
+
+### ✅ VERIFICAR SI ES EQUIPO TÉCNICO
+GET http://localhost:8080/api/eqtecnicos/verificar/5?id_club=1&id_categoria=1
+
+### ✅ ACTUALIZAR
+PUT http://localhost:8080/api/eqtecnicos/1
+Content-Type: application/json
+
+{
+  "hasta": "2025-11-30"
+}
+
+### ✅ ELIMINAR (soft delete)
+DELETE http://localhost:8080/api/eqtecnicos/1

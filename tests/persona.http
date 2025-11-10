@@ -1,0 +1,140 @@
+### Obtener todas las personas activas
+GET http://localhost:8080/api/persona/
+Accept: application/json
+
+### Obtener todas las personas (incluyendo inactivas)
+GET http://localhost:8080/api/persona/todas
+Accept: application/json
+
+### Crear una Persona
+POST http://localhost:8080/api/persona
+Content-Type: application/json
+
+{
+  "ci": "7150693",
+  "nombre": "Javier",
+  "ap": "Alcoba",
+  "am": "Gutierrez",
+  "fnac": "1993-10-07",
+  "id_nacionalidad": 1,
+  "genero": "masculino",
+  "foto": "https://example.com/foto1.jpg"
+}
+
+### Crear otra Persona
+POST http://localhost:8080/api/persona
+Content-Type: application/json
+
+{
+  "ci": "87654321",
+  "nombre": "María",
+  "ap": "López",
+  "am": "Martínez",
+  "fnac": "1995-08-20",
+  "id_nacionalidad": 1,
+  "genero": "femenino"
+}
+
+### Crear Persona sin segundo apellido
+POST http://localhost:8080/api/persona
+Content-Type: application/json
+
+{
+  "ci": "11223344",
+  "nombre": "Carlos",
+  "ap": "Ruiz",
+  "fnac": "1988-03-10",
+  "id_nacionalidad": 2,
+  "genero": "otro"
+}
+
+### Get persona por ID
+GET http://localhost:8080/api/persona/1
+Content-Type: application/json
+Accept: application/json
+
+### Get persona por ID - Por body
+POST http://localhost:8080/api/persona/getbyId
+Content-Type: application/json
+Accept: application/json
+
+{
+  "id": 1
+}
+
+### Obtener persona por CI
+GET http://localhost:8080/api/persona/ci/12345678
+Accept: application/json
+
+### Obtener personas por nacionalidad
+GET http://localhost:8080/api/persona/nacionalidad/1
+Accept: application/json
+
+### Obtener personas por género - Masculino
+GET http://localhost:8080/api/persona/genero/masculino
+Accept: application/json
+
+### Obtener personas por género - Femenino
+GET http://localhost:8080/api/persona/genero/femenino
+Accept: application/json
+
+### Obtener personas por rango de edad (20 a 30 años)
+GET http://localhost:8080/api/persona/edad/20/30
+Accept: application/json
+
+### Obtener personas por rango de edad (30 a 40 años)
+GET http://localhost:8080/api/persona/edad/30/40
+Accept: application/json
+
+### Obtener personas por nombre (búsqueda)
+GET http://localhost:8080/api/persona/nombre/Juan
+Accept: application/json
+
+### Obtener personas por nombre - búsqueda parcial
+GET http://localhost:8080/api/persona/nombre/María
+Accept: application/json
+
+### Editar persona - Cambiar nombre
+PUT http://localhost:8080/api/persona/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Carlos"
+}
+
+### Editar persona - Cambiar apellidos
+PUT http://localhost:8080/api/persona/2
+Content-Type: application/json
+
+{
+  "ap": "Rodríguez",
+  "am": "Fernández"
+}
+
+### Editar persona - Cambiar género
+PUT http://localhost:8080/api/persona/3
+Content-Type: application/json
+
+{
+  "genero": "femenino"
+}
+
+### Editar persona - Cambiar foto
+PUT http://localhost:8080/api/persona/1
+Content-Type: application/json
+
+{
+  "foto": "https://example.com/foto-actualizada.jpg"
+}
+
+### Editar persona - Cambiar nacionalidad
+PUT http://localhost:8080/api/persona/2
+Content-Type: application/json
+
+{
+  "id_nacionalidad": 2
+}
+
+### Eliminar logicamente una persona
+DELETE http://localhost:8080/api/persona/3
+Accept: application/json

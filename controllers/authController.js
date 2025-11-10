@@ -1,4 +1,4 @@
-const { Usuario, Session } = require('../models');
+const { Usuario, Session} = require('../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -87,10 +87,10 @@ exports.login = async (req, res) => {
       console.error('session create error', e);
       return res.status(500).json({ error: 'Error al generar el Refresh Token' });
     }
-
+    console.log(usuario)
     res.json({
       token,
-      usuario: { email: usuario.email, rol: usuario.rol },
+      usuario: { email: usuario.email, rol: usuario.rol},
       refreshToken: refreshToken ? undefined : undefined
     });
   } catch (error) {
@@ -140,7 +140,7 @@ exports.refresh = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    const refreshToken = req.cookies?.refresh_token || req.body.refresh_token;
+    const refreshToken = req.cookies?.refresh_token || req.body?.refresh_token;
     if (refreshToken) {
       await Session.destroy({ where: { token: refreshToken } });
     }
