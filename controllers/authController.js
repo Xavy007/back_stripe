@@ -37,8 +37,7 @@ exports.login = async (req, res) => {
   console.log(email+" "+password);
   try {
     const emailLc = (email || '').toLowerCase();
- 
-    const usuario = await Usuario.scope('withPassword').findOne({ where: { email: emailLc } });
+     const usuario = await Usuario.scope('withPassword').findOne({ where: { email: emailLc } });
     console.log('found usuario:', !!usuario, usuario ? { id: usuario.id_usuario, verificado: usuario.verificado, estado: usuario.estado, hasPassword: !!usuario.password } : null);
  
    if (!usuario) return res.status(401).json({ error: 'Credenciales inválidas' });
