@@ -6,9 +6,6 @@ npx sequelize-cli model:generate --name Persona --attributes id_persona:integer,
 npx sequelize-cli model:generate --name Nacionalidad --attributes id_nacionalidad:integer, pais:string, estado:boolean, f_reg:date
 npx sequelize-cli model:generate --name Usuario --attributes id_usuario:integer,estado:boolean,freg:date,email:string, password:string,rol:enum,verificado:boolean, id_persona:integer
 npx sequelize-cli model:generate --name Session --attributes token:string,id_usuario:integer,ip:string,user_agent:string,expires_at:date
-
-
-
 npx sequelize-cli migration:generate --name add-foto-to-personas
 
 npx sequelize-cli model:generate --name Categoria --attributes id_categoria:integer, nombre:string, descripcion:string, edad_inicio:integer,edad_limite:integer,genero:enum, estado:boolean,freg:date
@@ -59,3 +56,6 @@ npx sequelize-cli migration:generate --name rename-participacions-to-participaci
 
 
 npx sequelize-cli migration:generate --name rename-tablaposicions-to-tablaposiciones
+
+
+npx sequelize-cli db:seed:all
