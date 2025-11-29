@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
           const minYear= currentYear-2;
           const maxYear= currentYear+1;
           if(value < minYear || value > maxYear ){
-            throw new Error('Lagestion debe ser ${minYear} y ${maxYear} o mas reciente');
+            throw new Error('La gestion debe ser ${minYear} y ${maxYear} o mas reciente');
           }
         }
       }

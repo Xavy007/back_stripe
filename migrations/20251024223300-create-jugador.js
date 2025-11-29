@@ -23,16 +23,27 @@ module.exports = {
       estatura: {
         type: Sequelize.DOUBLE
       },
-      freg: {
-        type: Sequelize.DATE
+      foto_jugador:{
+      type: Sequelize.STRING,
+      allowNull: true,
       },
+      dorsal:{
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      },
+      
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
-      id_club: {
+      freg: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
+      },      id_club: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        unique:true,
         references: {
           model: 'Clubes',
           key: 'id_club'

@@ -35,11 +35,13 @@ module.exports = {
       },
       estado: {
         type: Sequelize.BOOLEAN,
-        defaultValue: true
+        allowNull: false,
+        defaultValue: true,
       },
       freg: {
         type: Sequelize.DATE,
-        defaultValue:Sequelize.NOW
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         allowNull: false,
@@ -52,6 +54,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Clubs');
+    await queryInterface.dropTable('Clubes');
   }
 };

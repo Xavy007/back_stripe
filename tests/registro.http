@@ -1,4 +1,64 @@
 ### REGISTRO - Crear Persona y Usuario juntos
+POST http://localhost:8080/api/usuario
+Content-Type: application/json
+
+{
+  "persona": {
+    "ci": "7150693",
+    "nombre": "Javier",
+    "ap": "Alcoba",
+    "am": "Gutierrez",
+    "fnac": "07-10-1993",
+    "id_nacionalidad": 1,
+    "genero": "masculino",
+    "foto": "https://example.com/foto.jpg"
+  },
+  "usuario": {
+    "email": "javier@dotset.com",
+    "password": "Contrasena123456",
+    "rol": "admin"
+  }
+}
+
+### REGISTRO - Crear Persona y Usuario juntos
+POST http://localhost:8080/api/usuario/persona_existente
+Content-Type: application/json
+
+{
+    "id_persona":1,
+    "email": "javier@dotset.com",
+    "password": "Contrasena123456",
+    "rol": "admin"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### REGISTRO - Crear Persona y Usuario juntos
 POST http://localhost:8080/api/auth/registro
 Content-Type: application/json
 

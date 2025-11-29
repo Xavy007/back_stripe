@@ -18,7 +18,11 @@ const campeonatoCategoriaroutes=require('./routes/campeonatoCategoria.routes');
 const usuarioroutes=require('./routes/usuario.routes');
 const vinculoRoutes= require('./routes/vinculo.routes');
 const jugadoresRoutes= require('./routes/jugador.routes');
-const eqTecnicoroutes= require('./routes/eqTecnico.routes')
+const eqTecnicoroutes= require('./routes/eqTecnico.routes');
+const departamentosroutes=require('./routes/departamento.routes');
+const provinciaRoutes = require('./routes/provincia.routes');
+const carnetsRoutes= require('./routes/carnet.routes')
+const clubUsuarioRoutes= require('./routes/clubUsuario.routes')
 const cors = require('cors');
 app.use(express.json());
 
@@ -43,23 +47,22 @@ app.get('/api/admin', authMiddleware, roleMiddleware(['admin']), (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/persona', personaRoutes);
 app.use('/api/nacionalidad',nacionalidadroute);
-app.use('/api/canchas',canchasroutes);
+app.use('/api/cancha',canchasroutes);
 app.use('/api/categoria',categoriasroutes);
 app.use('/api/club',clubroutes);
 app.use('/api/campeonato',campeonatoroutes);
-app.use('/api/gestion-campeonato',gestionCampeonatoroutes);
+app.use('/api/gestion',gestionCampeonatoroutes);
 app.use('/api/equipo',equipoRoutes);
 app.use('/api/campeonato-categoria',campeonatoCategoriaroutes);
 app.use('/api/usuario',usuarioroutes);
 app.use('/api/vinculo', vinculoRoutes)
 app.use('/api/jugadores',jugadoresRoutes)
 app.use('/api/eqtecnicos', eqTecnicoroutes);
+app.use('/api/departamentos',departamentosroutes );
+app.use('/api/provincias', provinciaRoutes);
+app.use('/api/carnets', carnetsRoutes);
+app.use('/api/clubusuario',clubUsuarioRoutes);
 app.use((req, res, next) => { console.log(`${req.method} ${req.path}`); next(); });
 
-/*const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});*/
 
 module.exports=app;

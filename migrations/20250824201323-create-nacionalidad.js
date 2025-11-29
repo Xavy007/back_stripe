@@ -13,10 +13,14 @@ module.exports = {
         type: Sequelize.STRING
       },
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       f_reg: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         allowNull: false,

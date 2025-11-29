@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       Club.hasMany(models.Equipo, { foreignKey: 'id_club' });
       Club.hasMany(models.EqTecnico, { foreignKey: 'id_club' });
       Club.hasMany(models.Jugador, { foreignKey: 'id_club' });
-      
+      Club.hasMany(models.ClubUsuario, { foreignKey: 'id_club',  as: 'miembros'  });
     }
   }
   Club.init({

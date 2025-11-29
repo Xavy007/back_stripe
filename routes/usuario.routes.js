@@ -14,6 +14,12 @@ router.post(
     autorizar('admin'),
     usuarioController.crearUsuario
 );
+router.post(
+    '/persona_existente',
+    autenticar,
+    autorizar('admin'),
+    usuarioController.crearUsuarioParaPersonaExistente
+);
 
 // OBTENER TODOS - Solo admin
 router.get(

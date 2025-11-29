@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_nacionalidad',
         as: 'nacionalidad'
       });
+
+      
+      Persona.belongsTo(models.Provincia, {
+        foreignKey: 'id_provincia_origen',
+        as: 'provinciaOrigen'
+      });
+
+
       Persona.hasOne(models.Usuario, {
         foreignKey: 'id_persona',
         as: 'usuario'
@@ -60,10 +68,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     am: {
       type: DataTypes.STRING,
+      allowNull:true,
       validate: {
-        len: {
-          args: [3, 255],
-          msg: 'el apellido debe tener al menos 3 caracteres'
+        lenOpcional(value) {
+              // si es null o string vacío → NO validar
+              if (value === null || value === '') return;
+
+              if (value.length < 3) {
+                throw new Error('el apellido debe tener al menos 3 caracteres');
+              }
         }
       }
     },
@@ -81,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
         isMaxAge(value) {
           const today = new Date();
           const date = new Date(value);
-          const age = today.getFullYear() - date.getFullYear();
+          let age = today.getFullYear() - date.getFullYear();
           const birt = new Date(today.getFullYear(), date.getMonth(), date.getDate());
           if (today < birt) {
             age--;
@@ -118,7 +131,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: true
-    }
+    },
+    
+    id_provincia_origen: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Provincias',
+        key: 'id_provincia'
+      }
+    },
   },
     {
       sequelize,

@@ -1,7 +1,7 @@
 
 
 
-const { Persona, Nacionalidad } = require('../models');
+const { Persona, Nacionalidad, Provincia, Departamento} = require('../models');
 
 // CREATE - Crear una persona
 const crearPersona = async (data) => {
@@ -47,15 +47,19 @@ const obtenerPersonaPorId = async (id_persona) => {
 
 // READ - Obtener persona por CI
 const obtenerPersonaPorCI = async (ci) => {
-    return await Persona.findOne({
-        where: { ci: ci },
-        include: [
-            {
-                model: Nacionalidad,
-                as: 'nacionalidad'
-            }
-        ]
-    });
+  const persona = await Persona.findOne({
+    where: { ci },
+    include: [
+      { model: Nacionalidad, as: 'nacionalidad', attributes: ['id_nacionalidad', 'pais'] },
+      {
+        model: Provincia,
+        as: 'provinciaOrigen',
+        include: [{ model: Departamento, as: 'departamento', attributes: ['id_departamento', 'nombre'] }]
+      }
+    ]
+  });
+
+  return persona;
 };
 
 // READ - Obtener personas por nacionalidad

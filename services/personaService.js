@@ -1,5 +1,5 @@
 const PersonaRepository = require('../repositories/personaRepository');
-const { Nacionalidad } = require('../models');
+const { Nacionalidad, Provincia } = require('../models');
 
 // Función para calcular edad
 const calcularEdad = (fechaNacimiento) => {
@@ -14,8 +14,11 @@ const calcularEdad = (fechaNacimiento) => {
 };
 
 // CREATE - Crear una persona
-const crearPersona = async (data) => {
-    // Validaciones de campos obligatorios
+const crearPersona = async (data,transaction) => {
+    console.log('🧩 Datos que llegan al personaService:', data);
+
+    const { ci, nombre, ap, am, fnac, id_nacionalidad, genero } = data;
+
     if (!data.ci || data.ci.trim() === '') {
         throw new Error('El CI es obligatorio');
     }
@@ -82,12 +85,19 @@ const crearPersona = async (data) => {
     if (data.am && data.am.trim().length > 0 && data.am.length < 3) {
         throw new Error('El segundo apellido debe tener al menos 3 caracteres');
     }
-
+    // 🔹 Validar provincia SOLO si viene
+    if (data.id_provincia_origen) {
+        const provincia = await Provincia.findByPk(data.id_provincia_origen);
+        if (!provincia) {
+            throw new Error('La provincia especificada no existe');
+        }
+    }
     try {
         const nuevaPersona = await PersonaRepository.crearPersona({
             ...data,
             genero: data.genero.toLowerCase(),
-            estado: true
+            estado: true,
+            id_provincia_origen: data.id_provincia_origen ?? null
         });
         return nuevaPersona;
     } catch (error) {

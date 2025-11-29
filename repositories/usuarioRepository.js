@@ -32,6 +32,7 @@ const obtenerUsuarioPorId = async (id_usuario) => {
     });
 };
 
+
 // READ - Obtener usuario por ID con contraseña
 const obtenerUsuarioPorIdConPassword = async (id_usuario) => {
     return await Usuario.scope('withPassword').findByPk(id_usuario, {

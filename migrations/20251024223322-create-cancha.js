@@ -31,10 +31,14 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
       },
       freg: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       createdAt: {
         allowNull: false,

@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_persona',
         as: 'persona',
       });
+      Usuario.hasMany(models.ClubUsuario, {
+        foreignKey: 'id_usuario',
+        as: 'clubesAsignados'
+      });
     }
 
     async verifyPassword(plain) {

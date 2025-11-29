@@ -10,7 +10,6 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       ci: {
-
         type: Sequelize.STRING
       },
       nombre: {
@@ -25,15 +24,19 @@ module.exports = {
       fnac: {
         type: Sequelize.DATE
       },
-      estado: {
-        type: Sequelize.BOOLEAN
-      },
       genero: {
         type: Sequelize.ENUM('masculino','femenino','otro'),
         allowNull:false
       },
+      estado: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true,
+      },
       freg: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW,
       },
       id_nacionalidad: {
         type: Sequelize.INTEGER,

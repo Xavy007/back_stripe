@@ -3,7 +3,7 @@ POST http://localhost:8080/api/usuario/login
 Content-Type: application/json
 
 {
-  "email": "javier@gmail.com",
+  "email": "javier@dotset.com",
   "password": "Contrasena123456"
 }
 
@@ -17,7 +17,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 {
-  "email": "javier@gmail.com",
+  "email": "javier@dotset.com",
   "password": "Contrasena123456",
   "rol": "admin",
   "id_persona": 4,

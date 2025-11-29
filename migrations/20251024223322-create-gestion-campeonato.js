@@ -9,31 +9,45 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+
       nombre: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
+
       gestion: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
+
       descripcion: {
         type: Sequelize.STRING
       },
+
       estado: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
       },
+
       freg: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.NOW
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
       },
+
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('GestionCampeonatos');
   }

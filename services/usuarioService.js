@@ -96,6 +96,26 @@ const obtenerUsuarioPorId = async (id_usuario) => {
     }
 };
 
+
+
+const obtenerUsuarioPorIdPersona = async (id_persona) => {
+    if (!id_persona || !Number.isInteger(parseInt(id_persona))) {
+        throw new Error('El ID del usuario debe ser un número válido');
+    }
+
+    try {
+        const usuario = await UsuarioRepository.obtenerUsuarioPorIdPersona(id_persona);
+        return usuario || null;
+    } catch (error) {
+        throw new Error(`Error al obtener usuario: ${error.message}`);
+    }
+};
+
+
+
+
+
+
 const obtenerUsuarioPorEmail = async (email) => {
     if (!email || email.trim() === '') {
         throw new Error('El email es obligatorio');
@@ -381,6 +401,7 @@ module.exports = {
     crearUsuario,
     obtenerUsuarios,
     obtenerUsuarioPorId,
+    obtenerUsuarioPorIdPersona,
     obtenerUsuarioPorEmail,
     obtenerUsuariosPorRol,
     obtenerUsuariosVerificados,

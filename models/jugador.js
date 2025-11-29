@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Jugador.belongsTo(models.Persona, { foreignKey: 'id_persona' });
       Jugador.belongsTo(models.Club, { foreignKey: 'id_club' });
+      Jugador.hasMany(models.Carnet, { foreignKey: 'id_jugador', as: 'carnets' });
     }
   }
   Jugador.init({
@@ -33,7 +34,6 @@ module.exports = (sequelize, DataTypes) => {
     id_club: {
       type:DataTypes.INTEGER,
       allowNull:false,
-      unique:true,
       references:{
         model:'Clubes',
         key:'id_club'

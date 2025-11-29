@@ -1,17 +1,7 @@
-/**
- * repositories/jugadorRepository.js
- * 
- * VERSIÓN ULTRA SIMPLIFICADA - Sin includes en absoluto
- * Evita todos los errores de Sequelize
- */
 
 const { Jugador, Persona, Club, Direccion, sequelize } = require('../models');
 const { Op } = require('sequelize');
-
-// ============================================
-// CREATE
-// ============================================
-
+ const jugadorRepository= require ('../repositories/jugadorRepository');
 const crearJugador = async (data, transaction = null) => {
     try {
         const jugador = await Jugador.create(data, { transaction });
@@ -21,9 +11,99 @@ const crearJugador = async (data, transaction = null) => {
     }
 };
 
-// ============================================
-// READ - Obtener todos los jugadores
-// ============================================
+const crearJugadorCompleto = async (datosPersona, datosJugador) => {
+  return await sequelize.transaction(async (t) => {
+    // 1. Crear persona
+    const persona = await Persona.create(datosPersona, { transaction: t });
+
+    // 2. Crear jugador usando el id_persona de la persona recién creada
+    const dataJugador = {
+      ...datosJugador,
+      id_persona: persona.id_persona
+    };
+
+    const jugador = await jugadorRepository.crearJugador(dataJugador, t);
+
+    return {
+      success: true,
+      message: 'Persona y jugador creados correctamente',
+      data: {
+        persona,
+        jugador
+      }
+    };
+  });
+};
+
+
+const crearJugadorCompletoCI = async ({ datosPersona, datosJugador }) => {
+  return sequelize.transaction(async (t) => {
+    // 1. Buscar persona por CI
+    let persona = await Persona.findOne({
+      where: { ci: datosPersona.ci },
+      transaction: t,
+    });
+
+    // 2. Si NO existe, crear
+    if (!persona) {
+      persona = await Persona.create(datosPersona, { transaction: t });
+    }
+
+    // 3. Si YA existe un jugador asociado, evitar duplicado
+    const jugadorExistente = await Jugador.findOne({
+      where: { id_persona: persona.id_persona },
+      transaction: t,
+    });
+
+    if (jugadorExistente) {
+      throw new Error('Esta persona ya está registrada como jugador');
+    }
+
+    // 4. Crear jugador
+    const jugador = await Jugador.create(
+      {
+        ...datosJugador,
+        id_persona: persona.id_persona,
+      },
+      { transaction: t }
+    );
+
+    return { success: true, data: { persona, jugador } };
+  });
+};
+
+
+
+
+const crearJugadorParaPersona = async (id_persona, datosJugador) => {
+  // Verificar que exista la persona
+  const persona = await Persona.findByPk(id_persona);
+
+  if (!persona) {
+    throw new Error('La persona no existe');
+  }
+
+  // Verificar si ya es jugador (opcional)
+  // puedes usar jugadorRepository.esJugador(id_persona)
+  const dataJugador = {
+    ...datosJugador,
+    id_persona: parseInt(id_persona)
+  };
+
+  const jugador = await jugadorRepository.crearJugador(dataJugador);
+
+  return {
+    success: true,
+    message: 'Jugador creado correctamente para la persona indicada',
+    data: {
+      persona,
+      jugador
+    }
+  };
+};
+
+
+
 
 const obtenerJugadores = async (filtros = {}) => {
     try {
@@ -34,11 +114,12 @@ const obtenerJugadores = async (filtros = {}) => {
         }
 
         // Query SUPER simple - sin includes
-        const jugadores = await Jugador.findAll({
+       /* const jugadores = await Jugador.findAll({
             where,
             order: [['id_jugador', 'DESC']],
             raw: true
-        });
+        });*/
+        const jugadores= await jugadorRepository.obtenerTodosLosJugadores();
 
         return {
             success: true,
@@ -79,18 +160,12 @@ const obtenerTodosLosJugadores = async () => {
 
 const obtenerJugadorPorId = async (id_jugador) => {
     try {
-        const jugador = await Jugador.findByPk(id_jugador, {
-            raw: true
-        });
-
+        const jugador = await jugadorRepository.obtenerJugadorPorId(id_jugador);
         if (!jugador) {
             throw new Error('El jugador no existe');
         }
 
-        return {
-            success: true,
-            data: jugador
-        };
+        return jugador;
     } catch (error) {
         throw new Error(error.message);
     }
@@ -454,6 +529,9 @@ const eliminarJugador = async (id_jugador) => {
 
 module.exports = {
     crearJugador,
+    crearJugadorCompleto,
+    crearJugadorParaPersona,
+    crearJugadorCompletoCI,
     obtenerJugadores,
     obtenerTodosLosJugadores,
     obtenerJugadorPorId,

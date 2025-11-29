@@ -1,5 +1,5 @@
 ### Obtener Usuarios
-GET http://localhost:8080/api/persona/getUsuarios
+GET http://localhost:8080/api/gestion
 Accept: application/json
 
 ### Obtener nacionalidades
@@ -11,7 +11,7 @@ POST http://localhost:8080/api/nacionalidad
 Content-Type: application/json
 
 {
-  "pais": "Argentina",
+  "pais": "Bolivia",
   "estado": true
 }
 
@@ -44,7 +44,7 @@ Accept: application/json
 
 
 ### Test ServiceA through Gateway (Round Robin Load Balancing)
-POST http://localhost:8080/api/personas/registro
+POST http://localhost:8080/api/persona/registro
 Accept: application/json
 Content-Type: application/json
 
@@ -59,7 +59,7 @@ Content-Type: application/json
     "id_nacionalidad": 1
   },
   "usuario": {
-    "email": "javier@gmail.com",
+    "email": "javier@dotset.com",
     "password": "secreta12345",
     "rol":"admin"
   }

@@ -6,9 +6,48 @@
 GET http://localhost:8080/api/jugadores
 Accept: application/json
 
+
+### Obtener todos los jugadores activos
+GET http://localhost:8080/api/carnets
+Accept: application/json
+
 ### Obtener todos los jugadores (incluyendo inactivos)
 GET http://localhost:8080/api/jugadores/todos
 Accept: application/json
+
+
+### Crear jugador con persona NUEVA (Persona + Jugador)
+POST http://localhost:8080/api/jugadores
+Content-Type: application/json
+
+{
+  "datosPersona": {
+    "ci": "7150695",
+    "nombre": "Javier",
+    "ap": "Albornoz",
+    "am": "Gonzales",
+    "fnac": "1993-10-07",
+    "id_nacionalidad": 1,
+    "genero": "masculino",
+    "foto": "https://example.com/foto1.jpg"
+  },
+  "datosJugador": {
+    "id_club": 1,
+    "estatura": 185
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### ============================================
 ### CREAR JUGADORES CON PERSONA Y DIRECCIÓN

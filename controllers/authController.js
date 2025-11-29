@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { body, validationResult } = require('express-validator'); 
+const clubUsuarioService= require('../services/clubUsuarioService');
+const personaService= require('../services/personaService');
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
@@ -38,7 +40,7 @@ exports.login = async (req, res) => {
   try {
     const emailLc = (email || '').toLowerCase();
      const usuario = await Usuario.scope('withPassword').findOne({ where: { email: emailLc } });
-    console.log('found usuario:', !!usuario, usuario ? { id: usuario.id_usuario, verificado: usuario.verificado, estado: usuario.estado, hasPassword: !!usuario.password } : null);
+    //console.log('found usuario:', !!usuario, usuario ? { id: usuario.id_usuario, verificado: usuario.verificado, estado: usuario.estado, hasPassword: !!usuario.password } : null);
  
    if (!usuario) return res.status(401).json({ error: 'Credenciales inválidas' });
     if (!usuario.verificado) return res.status(401).json({ error: 'Cuenta no verificada' });
@@ -49,9 +51,9 @@ exports.login = async (req, res) => {
     if (usuario.locked_until && new Date() < new Date(usuario.locked_until)) {
       return res.status(429).json({ error: 'Cuenta temporalmente bloqueada. Intenta más tarde.' });
     }
-    console.log(password);
+    //console.log(password);
     const match = await bcrypt.compare(password, usuario.password);
-    console.log(match)
+    //console.log(match)
     if (!match) {
       await usuario.recordFailedAttempt(); // Lógica delegada a la instancia del modelo
       return res.status(401).json({ error: 'Credenciales inválidas' });
@@ -64,7 +66,7 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: ACCESS_TOKEN_EXPIRES }
     );
-
+    
     let refreshToken;
     try {
       refreshToken = crypto.randomBytes(40).toString('hex');
@@ -86,10 +88,18 @@ exports.login = async (req, res) => {
       console.error('session create error', e);
       return res.status(500).json({ error: 'Error al generar el Refresh Token' });
     }
-    console.log(usuario)
+     
+    const clubusu = await clubUsuarioService.obtenerPorUsuario(usuario.id_usuario);
+    const persona = await personaService.obtenerPersonaPorId(usuario.id_persona);
+    const usunombre= [persona.nombre, persona.ap, persona.am]
+          .map(s => s.trim())
+          .filter(Boolean)
+          .join(' ')
+
+
     res.json({
       token,
-      usuario: { email: usuario.email, rol: usuario.rol},
+      usuario: { id_usuario:usuario.id_usuario, email: usuario.email, rol: usuario.rol,club: clubusu ? clubusu.club.nombre : null, id_club: clubusu ? clubusu.id_club : null, nombre:usunombre},
       refreshToken: refreshToken ? undefined : undefined
     });
   } catch (error) {
@@ -97,6 +107,10 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Error en el servidor' });
   }
 };
+
+
+
+
 exports.refresh = async (req, res) => {
   try {
     const refreshToken = req.cookies?.refresh_token || req.body.refresh_token;
