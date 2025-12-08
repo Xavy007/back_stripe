@@ -47,7 +47,7 @@ module.exports = {
       },
 
       // ✅ MODIFICADO: estado (BOOLEAN → ENUM)
-      estado: {
+      estado_eq: {
         type: Sequelize.ENUM('activo', 'suspendido', 'inactivo'),
         allowNull: false,
         defaultValue: 'activo',

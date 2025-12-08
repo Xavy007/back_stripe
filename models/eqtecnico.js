@@ -129,7 +129,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
-    estado: {
+    estado_eq: {
       type: DataTypes.ENUM('activo', 'suspendido', 'inactivo'),
       allowNull: false,
       defaultValue: 'activo',
@@ -177,7 +177,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
       allowNull: true
-    }
+    },
+    estado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true},
   }, {
     sequelize,
     modelName: 'EqTecnico',

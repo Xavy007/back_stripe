@@ -2,13 +2,17 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    const ahora = new Date();
+
     const nacionalidades = [
       'Bolivia', 'Argentina', 'Brasil', 'Chile', 'Perú', 'Paraguay',
       'Uruguay', 'Colombia', 'Ecuador', 'Venezuela', 'México', 'España', 'Estados Unidos'
     ].map(pais => ({
       pais,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      estado: true,     // opcional pero recomendado, para ser consistente
+      f_reg: ahora,     // 👈 aquí ya nunca será null
+      createdAt: ahora,
+      updatedAt: ahora
     }));
 
     await queryInterface.bulkInsert('Nacionalidades', nacionalidades, {});

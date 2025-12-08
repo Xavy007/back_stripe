@@ -23,6 +23,8 @@ const departamentosroutes=require('./routes/departamento.routes');
 const provinciaRoutes = require('./routes/provincia.routes');
 const carnetsRoutes= require('./routes/carnet.routes')
 const clubUsuarioRoutes= require('./routes/clubUsuario.routes')
+const jueceRoutes= require('./routes/jueces.routes')
+const eqtecnico=require('./routes/eqTecnico.routes')
 const cors = require('cors');
 app.use(express.json());
 
@@ -62,6 +64,8 @@ app.use('/api/departamentos',departamentosroutes );
 app.use('/api/provincias', provinciaRoutes);
 app.use('/api/carnets', carnetsRoutes);
 app.use('/api/clubusuario',clubUsuarioRoutes);
+app.use('/api/jueces',jueceRoutes);
+app.use('/api/eqtecnico',eqTecnicoroutes);
 app.use((req, res, next) => { console.log(`${req.method} ${req.path}`); next(); });
 
 

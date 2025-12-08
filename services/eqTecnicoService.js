@@ -1,498 +1,172 @@
-/**
- * services/equipoTecnicoService.js
- * 
- * Service - Wrapper del repositorio con respuestas estandarizadas
- */
-
+// src/services/eqTecnicoService.js
 const {
-    crearEqTecnico,
-    obtenerEqTecnicos,
-    obtenerTodosLosEqTecnicos,
-    obtenerEqTecnicoPorId,
-    obtenerEqTecnicoCompleto,
-    obtenerEqTecnicosPorPersona,
-    obtenerEqTecnicosPorCategoria,
-    obtenerEqTecnicosPorClub,
-    obtenerEqTecnicosPorPeriodo,
-    obtenerEqTecnicosActuales,
-    esEqTecnico,
-    obtenerEqTecnicoPorIdPersona,
-    actualizarEqTecnico,
-    eliminarEqTecnico,
-    obtenerPersonasSinEqTecnico,
-    contarEqTecnicosPorClub,
-    verificarDisponibilidadPeriodo
+  obtenerEqTecnicos,
+  obtenerTodosLosEqTecnicos,
+  obtenerEqTecnicoPorId,
+  obtenerEqTecnicosPorClub,
+  obtenerEqTecnicosPorPersona,
+  obtenerEqTecnicosVigentes,
+  contarEqTecnicos,
+  contarEqTecnicosActivos,
+  contarEqTecnicosPorClub
 } = require('../repositories/eqTecnicoRepository');
 
-// ============================================
-// CREATE
-// ============================================
+const { EqTecnico, Persona } = require('../models');
 
-/**
- * Crear un nuevo equipo técnico
- */
-const crearEqTecnicoService = async (data) => {
-    try {
-        const resultado = await crearEqTecnico(data);
-        
-        return {
-            success: true,
-            message: 'Equipo técnico creado exitosamente',
-            data: resultado,
-            code: 'CREATE_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al crear equipo técnico: ${error.message}`,
-            code: 'CREATE_ERROR',
-            details: error
-        };
-    }
+// CREATE - Crea persona + eqTecnico (estado_eq y estado con defaults)
+const crearEqTecnico = async (payload) => {
+  const {
+    id_club,
+    rol,
+    fecha_inicio,
+    fecha_fin,
+    observaciones,
+    datoPersona
+  } = payload;
+
+  // 1) Crear persona
+  const persona = await Persona.create(datoPersona);
+
+  // 2) Crear eqTecnico
+  const tecnico = await EqTecnico.create({
+    id_persona: persona.id_persona,
+    id_club,
+    rol,
+    // estado_eq: se deja default 'activo'
+    // estado: se deja default true
+    fecha_inicio,
+    fecha_fin,
+    observaciones
+  });
+
+  // 3) Devolver con includes
+  return await obtenerEqTecnicoPorId(tecnico.id_eqtecnico, true);
 };
 
-// ============================================
-// READ - Obtener equipos activos
-// ============================================
-
-/**
- * Obtener todos los equipos técnicos activos
- */
-const obtenerEqTecnicosService = async (filtros = {}) => {
-    try {
-        const resultado = await obtenerEqTecnicos(filtros);
-        
-        return {
-            success: true,
-            message: resultado.message,
-            data: resultado.data,
-            total: resultado.total,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+// READ delegando al repositorio
+const listarEqTecnicos = async () => {
+  return await obtenerEqTecnicos();
 };
 
-const obtenerTodosLosEqTecnicosService = async () => {
-    try {
-        const resultado = await obtenerTodosLosEqTecnicos();
-        
-        return {
-            success: true,
-            message: resultado.message,
-            data: resultado.data,
-            total: resultado.total,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const listarTodosLosEqTecnicos = async () => {
+  return await obtenerTodosLosEqTecnicos();
 };
 
-
-const obtenerEqTecnicoPorIdService = async (id_eqtecnico) => {
-    try {
-        const resultado = await obtenerEqTecnicoPorId(id_eqtecnico);
-
-        if (!resultado.data) {
-            return {
-                success: false,
-                message: 'El equipo técnico no existe',
-                code: 'NOT_FOUND'
-            };
-        }
-
-        return {
-            success: true,
-            message: 'Equipo técnico encontrado',
-            data: resultado.data,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipo técnico: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const obtenerEqTecnicoDetalle = async (id_eqtecnico, incluirInactivos = false) => {
+  return await obtenerEqTecnicoPorId(id_eqtecnico, incluirInactivos);
 };
 
-
-const obtenerEqTecnicoCompletoService = async (id_eqtecnico) => {
-    try {
-        const resultado = await obtenerEqTecnicoCompleto(id_eqtecnico);
-
-        return {
-            success: true,
-            message: 'Equipo técnico encontrado',
-            data: resultado,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipo técnico: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const listarEqTecnicosPorClub = async (id_club, incluirInactivos = false) => {
+  return await obtenerEqTecnicosPorClub(id_club, incluirInactivos);
 };
 
-// ============================================
-// READ - Obtener por relaciones
-// ============================================
-
-/**
- * Obtener equipos técnicos por persona
- */
-const obtenerEqTecnicosPorPersonaService = async (id_persona) => {
-    try {
-        const resultado = await obtenerEqTecnicosPorPersona(id_persona);
-
-        return {
-            success: true,
-            message: `${resultado.length} equipos técnicos encontrados`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const listarEqTecnicosPorPersona = async (id_persona, incluirInactivos = false) => {
+  return await obtenerEqTecnicosPorPersona(id_persona, incluirInactivos);
 };
 
-/**
- * Obtener equipos técnicos por categoría
- */
-const obtenerEqTecnicosPorCategoriaService = async (id_categoria) => {
-    try {
-        const resultado = await obtenerEqTecnicosPorCategoria(id_categoria);
-
-        return {
-            success: true,
-            message: `${resultado.length} equipos técnicos encontrados`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const listarEqTecnicosVigentes = async (id_club = null) => {
+  return await obtenerEqTecnicosVigentes(id_club);
 };
 
-/**
- * Obtener equipos técnicos por club
- */
-const obtenerEqTecnicosPorClubService = async (id_club) => {
-    try {
-        const resultado = await obtenerEqTecnicosPorClub(id_club);
+const obtenerResumenEqTecnico = async () => {
+  const total = await contarEqTecnicos();
+  const activos = await contarEqTecnicosActivos();
 
-        return {
-            success: true,
-            message: `${resultado.length} equipos técnicos encontrados`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+  return {
+    total,
+    activos
+  };
 };
 
-/**
- * Obtener equipos técnicos por período
- */
-const obtenerEqTecnicosPorPeriodoService = async (fecha) => {
-    try {
-        const resultado = await obtenerEqTecnicosPorPeriodo(fecha);
-
-        return {
-            success: true,
-            message: `${resultado.length} equipos técnicos encontrados`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+const obtenerCantidadEqTecnicosPorClub = async (id_club) => {
+  const cantidad = await contarEqTecnicosPorClub(id_club);
+  return { id_club, cantidad };
 };
 
-/**
- * Obtener equipos técnicos activos actualmente
- */
-const obtenerEqTecnicosActualesService = async () => {
-    try {
-        const resultado = await obtenerEqTecnicosActuales();
+// UPDATE - Actualizar datos de persona + eqTecnico (sin tocar soft delete)
+const actualizarEqTecnico = async (id_eqtecnico, payload) => {
+  const tecnico = await EqTecnico.findByPk(id_eqtecnico, {
+    include: [{ model: Persona, as: 'persona' }]
+  });
 
-        return {
-            success: true,
-            message: `${resultado.length} equipos técnicos activos encontrados`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
+  if (!tecnico) {
+    return null;
+  }
+
+  const {
+    id_club,
+    rol,
+    fecha_inicio,
+    fecha_fin,
+    observaciones,
+    datoPersona
+  } = payload;
+
+  // ==== VALIDAR CI ÚNICO (si viene en datoPersona) ====
+  if (datoPersona && datoPersona.ci) {
+    const existente = await Persona.findOne({
+      where: {
+        ci: datoPersona.ci,
+        id_persona: { [Op.ne]: tecnico.persona.id_persona } // excluir la misma persona
+      }
+    });
+
+    if (existente) {
+      throw new Error('Ya existe otra persona con este CI');
     }
+  }
+
+  // Actualizar persona si viene datoPersona
+  if (datoPersona && tecnico.persona) {
+    await tecnico.persona.update(datoPersona);
+  }
+
+  // Actualizar EqTecnico
+  await tecnico.update({
+    id_club: id_club ?? tecnico.id_club,
+    rol: rol ?? tecnico.rol,
+    fecha_inicio: fecha_inicio ?? tecnico.fecha_inicio,
+    fecha_fin: fecha_fin ?? tecnico.fecha_fin,
+    observaciones: observaciones ?? tecnico.observaciones
+    // estado_eq y estado no se tocan aquí
+  });
+
+  return await obtenerEqTecnicoPorId(id_eqtecnico, true);
 };
 
-/**
- * Verificar si una persona es equipo técnico
- */
-const esEqTecnicoService = async (id_persona) => {
-    try {
-        const resultado = await esEqTecnico(id_persona);
+// CAMBIAR estado_eq (negocio) sin afectar soft delete
+const actualizarEstadoEqTecnico = async (id_eqtecnico, nuevoEstadoEq) => {
+  const tecnico = await EqTecnico.findByPk(id_eqtecnico);
+  if (!tecnico) {
+    return null;
+  }
 
-        return {
-            success: true,
-            message: resultado ? 'La persona es equipo técnico' : 'La persona no es equipo técnico',
-            data: { esEqTecnico: resultado },
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al verificar: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
+  await tecnico.update({ estado_eq: nuevoEstadoEq });
+  return tecnico;
 };
 
-/**
- * Obtener equipo técnico por ID de persona
- */
-const obtenerEqTecnicoPorIdPersonaService = async (id_persona) => {
-    try {
-        const resultado = await obtenerEqTecnicoPorIdPersona(id_persona);
+// DELETE - soft delete: estado = false
+const eliminarEqTecnico = async (id_eqtecnico) => {
+  const tecnico = await EqTecnico.findByPk(id_eqtecnico);
+  if (!tecnico) {
+    return null;
+  }
 
-        if (!resultado) {
-            return {
-                success: false,
-                message: 'El equipo técnico no existe',
-                code: 'NOT_FOUND'
-            };
-        }
-
-        return {
-            success: true,
-            message: 'Equipo técnico encontrado',
-            data: resultado,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener equipo técnico: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
-};
-
-/**
- * Obtener personas sin ser equipo técnico
- */
-const obtenerPersonasSinEqTecnicoService = async () => {
-    try {
-        const resultado = await obtenerPersonasSinEqTecnico();
-
-        return {
-            success: true,
-            message: `${resultado.length} personas sin equipo técnico encontradas`,
-            data: resultado,
-            total: resultado.length,
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al obtener personas: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
-};
-
-/**
- * Contar equipos técnicos por club
- */
-const contarEqTecnicosPorClubService = async (id_club) => {
-    try {
-        const cantidad = await contarEqTecnicosPorClub(id_club);
-
-        return {
-            success: true,
-            message: 'Cantidad obtenida exitosamente',
-            data: { cantidad },
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al contar equipos técnicos: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
-};
-
-/**
- * Verificar disponibilidad de período
- */
-const verificarDisponibilidadPeriodoService = async (id_persona, desde, hasta, excluyendo_id = null) => {
-    try {
-        const disponible = await verificarDisponibilidadPeriodo(id_persona, desde, hasta, excluyendo_id);
-
-        return {
-            success: true,
-            message: disponible ? 'Período disponible' : 'Período no disponible',
-            data: { disponible },
-            code: 'GET_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al verificar disponibilidad: ${error.message}`,
-            code: 'GET_ERROR',
-            details: error
-        };
-    }
-};
-
-// ============================================
-// UPDATE
-// ============================================
-
-/**
- * Actualizar un equipo técnico
- */
-const actualizarEqTecnicoService = async (id_eqtecnico, data) => {
-    try {
-        const resultado = await actualizarEqTecnico(id_eqtecnico, data);
-
-        if (!resultado) {
-            return {
-                success: false,
-                message: 'El equipo técnico no existe',
-                code: 'NOT_FOUND'
-            };
-        }
-
-        return {
-            success: true,
-            message: 'Equipo técnico actualizado exitosamente',
-            data: resultado,
-            code: 'UPDATE_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al actualizar equipo técnico: ${error.message}`,
-            code: 'UPDATE_ERROR',
-            details: error
-        };
-    }
-};
-
-// ============================================
-// DELETE
-// ============================================
-
-/**
- * Eliminar un equipo técnico (soft delete)
- */
-const eliminarEqTecnicoService = async (id_eqtecnico) => {
-    try {
-        const resultado = await eliminarEqTecnico(id_eqtecnico);
-
-        if (!resultado) {
-            return {
-                success: false,
-                message: 'El equipo técnico no existe',
-                code: 'NOT_FOUND'
-            };
-        }
-
-        return {
-            success: true,
-            message: 'Equipo técnico eliminado exitosamente',
-            data: resultado,
-            code: 'DELETE_SUCCESS'
-        };
-    } catch (error) {
-        return {
-            success: false,
-            message: `Error al eliminar equipo técnico: ${error.message}`,
-            code: 'DELETE_ERROR',
-            details: error
-        };
-    }
+  await tecnico.update({ estado: false });
+  return tecnico;
 };
 
 module.exports = {
-    // CREATE
-    crearEqTecnicoService,
-    
-    // READ - Activos
-    obtenerEqTecnicosService,
-    obtenerTodosLosEqTecnicosService,
-    obtenerEqTecnicoPorIdService,
-    obtenerEqTecnicoCompletoService,
-    
-    // READ - Por relaciones
-    obtenerEqTecnicosPorPersonaService,
-    obtenerEqTecnicosPorCategoriaService,
-    obtenerEqTecnicosPorClubService,
-    obtenerEqTecnicosPorPeriodoService,
-    obtenerEqTecnicosActualesService,
-    esEqTecnicoService,
-    obtenerEqTecnicoPorIdPersonaService,
-    obtenerPersonasSinEqTecnicoService,
-    contarEqTecnicosPorClubService,
-    verificarDisponibilidadPeriodoService,
-    
-    // UPDATE
-    actualizarEqTecnicoService,
-    
-    // DELETE
-    eliminarEqTecnicoService
+  crearEqTecnico,
+  listarEqTecnicos,
+  listarTodosLosEqTecnicos,
+  obtenerEqTecnicoDetalle,
+  listarEqTecnicosPorClub,
+  listarEqTecnicosPorPersona,
+  listarEqTecnicosVigentes,
+  obtenerResumenEqTecnico,
+  obtenerCantidadEqTecnicosPorClub,
+  actualizarEqTecnico,
+  actualizarEstadoEqTecnico,
+  eliminarEqTecnico
 };
