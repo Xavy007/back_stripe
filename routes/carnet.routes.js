@@ -2,8 +2,21 @@
 const express = require('express');
 const router = express.Router();
 const CarnetController = require('../controllers/carnetController');
+const { crearUploadConfig } = require('../config/uploadConfig');
 
-router.post('/solicitar', CarnetController.solicitarCarnet);
+// Configurar upload para fotos de carnets
+const { upload, attachFilePath, handleMulterError } = crearUploadConfig(
+    'carnets',  // carpeta
+    'carnet',   // prefijo
+    false       // sin acrónimo
+);
+
+router.post('/solicitar',
+    upload.single('foto'),
+    handleMulterError,
+    attachFilePath,
+    CarnetController.solicitarCarnet
+);
 
 router.put('/activar/:id', CarnetController.activarCarnet);
 

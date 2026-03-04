@@ -78,11 +78,11 @@ const crearPersona = async (data,transaction) => {
     }
     
     // Validar que los apellidos tengan al menos 3 caracteres si se proporcionan
-    if (data.ap && data.ap.trim().length > 0 && data.ap.length < 3) {
+    if (data.ap && data.ap !== null && typeof data.ap === 'string' && data.ap.trim().length > 0 && data.ap.length < 3) {
         throw new Error('El primer apellido debe tener al menos 3 caracteres');
     }
-    
-    if (data.am && data.am.trim().length > 0 && data.am.length < 3) {
+
+    if (data.am && data.am !== null && typeof data.am === 'string' && data.am.trim().length > 0 && data.am.length < 3) {
         throw new Error('El segundo apellido debe tener al menos 3 caracteres');
     }
     // 🔹 Validar provincia SOLO si viene
@@ -355,11 +355,11 @@ const actualizarPersona = async (id_persona, data) => {
         data.genero = data.genero.toLowerCase();
     }
     
-    if (data.ap !== undefined && data.ap.trim().length > 0 && data.ap.length < 3) {
+    if (data.ap !== undefined && data.ap !== null && data.ap.trim().length > 0 && data.ap.length < 3) {
         throw new Error('El primer apellido debe tener al menos 3 caracteres');
     }
-    
-    if (data.am !== undefined && data.am.trim().length > 0 && data.am.length < 3) {
+
+    if (data.am !== undefined && data.am !== null && data.am.trim().length > 0 && data.am.length < 3) {
         throw new Error('El segundo apellido debe tener al menos 3 caracteres');
     }
     

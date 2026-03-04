@@ -134,32 +134,22 @@ module.exports = (sequelize, DataTypes) => {
 
     id_fase: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,  // Opcional para fixtures simples
       references: {
         model: 'Fases',
         key: 'id_fase'
       },
-      validate: {
-        notNull: {
-          msg: 'La fase es requerida'
-        }
-      },
-      comment: 'FK → Fases (en qué fase)'
+      comment: 'FK → Fases (opcional para fixtures simples)'
     },
 
     id_grupo: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,  // Opcional para fixtures simples
       references: {
         model: 'Grupos',
         key: 'id_grupo'
       },
-      validate: {
-        notNull: {
-          msg: 'El grupo es requerido'
-        }
-      },
-      comment: 'FK → Grupos (en qué grupo)'
+      comment: 'FK → Grupos (opcional para fixtures simples)'
     },
 
     numero: {

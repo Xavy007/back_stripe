@@ -159,6 +159,48 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'Cantidad máxima de equipos permitidos'
     },
 
+    // ===== CONFIGURACIÓN DEL FIXTURE =====
+    // La fecha_inicio se toma del Campeonato.fecha_inicio
+    // El formato se define en CampeonatoCategoria.formato
+
+    ida_vuelta: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      comment: 'Si incluye partidos de ida y vuelta'
+    },
+
+    dias_entre_jornadas: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 7,
+      validate: {
+        min: {
+          args: [1],
+          msg: 'Mínimo 1 día entre jornadas'
+        },
+        max: {
+          args: [365],
+          msg: 'Máximo 365 días entre jornadas'
+        }
+      },
+      comment: 'Días de separación entre jornadas'
+    },
+
+    hora_inicio_partidos: {
+      type: DataTypes.TIME,
+      allowNull: true,
+      defaultValue: '18:00:00',
+      comment: 'Hora predeterminada de inicio de partidos'
+    },
+
+    dias_juego: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      allowNull: true,
+      defaultValue: null,
+      comment: 'Días de la semana en que se juega (0=Dom, 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb). Ej: [1,3,5] = Lun/Mié/Vie'
+    },
+
     observaciones: {
       type: DataTypes.TEXT,
       allowNull: true,

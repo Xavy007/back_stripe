@@ -14,6 +14,7 @@ router.get('/categoria/:id_categoria', CampeonatoCategoriaController.obtenerCamp
 router.get('/formato/:formato', CampeonatoCategoriaController.obtenerCampeonatoCategoriasPorFormato);         // GET /api/campeonato-categoria/formato/:formato
 router.get('/:id', CampeonatoCategoriaController.obtenerCampeonatoCategoriaPorId);                           // GET /api/campeonato-categoria/:id
 router.put('/:id', CampeonatoCategoriaController.actualizarCampeonatoCategoria);                             // PUT /api/campeonato-categoria/:id
+router.put('/:id/configuracion', CampeonatoCategoriaController.actualizarConfiguracion);                     // PUT /api/campeonato-categoria/:id/configuracion
 router.delete('/:id', CampeonatoCategoriaController.eliminarCampeonatoCategoria);                            // DELETE /api/campeonato-categoria/:id
 
 module.exports = router;

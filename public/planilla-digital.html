@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planilla Digital FIVB - DOTSET</title>
+    <style>
+        :root {
+            --borde-negro: 2px solid #000;
+            --borde-fino: 1px solid #000;
+            --fondo-gris: #e6e6e6;
+            --fuente: 'Arial Narrow', 'Roboto Condensed', sans-serif;
+            --altura-set: 165px;
+            --altura-header: 75px;
+        }
+
+        @page { size: A4 landscape; margin: 5mm; }
+
+        body {
+            font-family: var(--fuente);
+            font-size: 11px;
+            background: #555;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Controles superiores (solo pantalla) */
+        .controles {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            width: 297mm;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .controles input, .controles button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .controles button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        .controles button:hover {
+            background: #45a049;
+        }
+
+        .controles button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #btnImprimir {
+            background: #2196F3;
+        }
+
+        #btnImprimir:hover {
+            background: #0b7dda;
+        }
+
+        #estado {
+            margin-left: auto;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        #estado.cargando {
+            background: #FFC107;
+            color: #000;
+        }
+
+        #estado.listo {
+            background: #4CAF50;
+            color: white;
+        }
+
+        #estado.error {
+            background: #f44336;
+            color: white;
+        }
+
+        /* Lienzo A4 */
+        .hoja {
+            width: 297mm;
+            height: 200mm;
+            background: white;
+            padding: 5mm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        input.editable {
+            width: 100%; height: 100%; border: none; background: transparent;
+            text-align: center; font-family: inherit; font-size: inherit; outline: none; padding: 0;
+        }
+
+        /* UTILIDADES */
+        .fila { display: flex; width: 100%; }
+        .col { display: flex; flex-direction: column; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .titulo-caja {
+            background: var(--fondo-gris); text-align: center; font-weight: bold;
+            border-bottom: var(--borde-fino); font-size: 10px; padding: 2px; text-transform: uppercase;
+        }
+        .borde-box { border: var(--borde-negro); box-sizing: border-box; }
+
+        /* ENCABEZADO */
+        .header {
+            display: grid; grid-template-columns: 2fr 1fr 2fr;
+            border: var(--borde-negro); height: var(--altura-header); margin-bottom: 5px;
+        }
+        .header-info { padding: 4px; font-size: 10px; }
+        .header-logo {
+            font-size: 32pt; font-weight: 900; font-family: Arial;
+            display: flex; align-items: center; justify-content: center;
+            border-left: var(--borde-negro); border-right: var(--borde-negro);
+        }
+        .linea { border-bottom: 1px solid black; display: inline-block; height: 12px; margin-right: 5px; }
+
+        /* SETS */
+        .set-box {
+            border: var(--borde-negro);
+            height: var(--altura-set);
+            margin-bottom: 5px;
+            display: grid;
+            grid-template-columns: 25px 1fr 30px 30px 1fr 25px;
+            overflow: hidden;
+        }
+
+        .set-lat {
+            writing-mode: vertical-rl; transform: rotate(180deg);
+            text-align: center; font-weight: bold; font-size: 9px;
+            border-right: var(--borde-fino); display: flex; justify-content: space-around;
+        }
+        .set-lat.der { border-right: none; border-left: var(--borde-fino); }
+
+        .equipo-head { height: 20px; border-bottom: var(--borde-negro); display: flex; align-items: center; }
+        .bola { width: 14px; height: 14px; border: 1px solid black; border-radius: 50%; text-align: center; line-height: 14px; margin: 0 4px; font-weight: bold; cursor: pointer; }
+
+        .rot-grid { display: grid; grid-template-columns: repeat(6, 1fr); height: calc(100% - 20px); }
+        .jug-col { border-right: var(--borde-fino); display: grid; grid-template-rows: 15px 18px 18px 18px 1fr; }
+        .jug-col:last-child { border-right: none; }
+        .cell-gray { background: var(--fondo-gris); border-bottom: var(--borde-fino); text-align: center; font-weight: bold; }
+        .cell-std { border-bottom: var(--borde-fino); }
+
+        .pts-col { border-left: var(--borde-negro); display: grid; grid-template-columns: repeat(4, 1fr); align-content: start; font-size: 6px; }
+        .pts-col.der { border-right: var(--borde-negro); }
+        .pt { height: 9px; border: 0.5px solid #ddd; text-align: center; line-height: 9px; cursor: pointer; }
+        .pt.tachado { background: #333; color: white; }
+
+        .saques { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); }
+        .sq { border-right: 1px dotted #999; border-bottom: 1px dotted #999; position: relative; cursor: pointer; }
+        .sq span { position: absolute; top:0; left:0; font-size:5px; }
+        .sq.ok { background-color: black; }
+
+        /* BLOQUE INFERIOR */
+        .bloque-inferior {
+            display: flex;
+            gap: 5px;
+            flex-grow: 1;
+        }
+
+        .inf-col-izq { width: 50%; display: flex; flex-direction: column; gap: 5px; }
+        .inf-col-der { width: 50%; display: flex; flex-direction: column; gap: 5px; }
+
+        .set-5 { height: var(--altura-set); border: var(--borde-negro); display: grid; grid-template-columns: 25px 1fr 25px 1fr 25px; }
+
+        .caja-restante { flex-grow: 1; border: var(--borde-negro); display: flex; flex-direction: column; }
+
+        table.t-fina { width: 100%; border-collapse: collapse; font-size: 9px; text-align: center; }
+        table.t-fina td, table.t-fina th { border: 1px solid black; height: 16px; }
+        table.t-fina th { background: var(--fondo-gris); }
+
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .controles { display: none; }
+            .hoja { width: 100%; height: 100%; border: none; padding: 0; }
+            .titulo-caja, .cell-gray, .header-logo { -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- CONTROLES (solo visible en pantalla) -->
+<div class="controles">
+    <label>ID Partido:</label>
+    <input type="number" id="inputPartido" placeholder="Ej: 1" value="1">
+    <button id="btnCargar" onclick="cargarPartido()">Cargar Partido</button>
+    <button id="btnImprimir" onclick="window.print()" disabled>Imprimir</button>
+    <div id="estado" class="cargando">Esperando...</div>
+</div>
+
+<div class="hoja">
+    <div class="header">
+        <div class="header-info col">
+            <div class="fila"><b>Competición:</b> <span id="competicion" class="linea"></span></div>
+            <div class="fila" style="margin-top:2px">Ciudad: <span id="ciudad" class="linea"></span> Cód: <span id="codigo" class="linea"></span></div>
+            <div class="fila" style="margin-top:2px">Lugar: <span id="lugar" class="linea"></span> Partido: <span id="numPartido" class="linea"></span></div>
+            <div class="fila" style="margin-top:5px; font-size:9px">
+                Div: <span id="division"></span> | Cat: <span id="categoria"></span>
+            </div>
+        </div>
+        <div class="header-logo">FIVB</div>
+        <div class="header-info col center">
+            <b>FEDERATION INTERNATIONALE DE VOLLEYBALL</b>
+            <div style="border-top:2px solid black; width:100%; text-align:center; margin-top:5px; padding-top:2px; font-weight:bold;">PLANILLA DE ANOTACIÓN</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="col">
+            <div id="set-1"></div>
+            <div id="set-3"></div>
+        </div>
+        <div class="col">
+            <div id="set-2"></div>
+            <div id="set-4"></div>
+        </div>
+    </div>
+
+    <div class="bloque-inferior" style="margin-top: 5px;">
+        <div class="inf-col-izq">
+            <div class="set-box" id="set-5"></div>
+
+            <div class="caja-restante" style="display:grid; grid-template-columns: 1.2fr 1fr;">
+                <div style="border-right: 1px solid black; padding: 0;">
+                    <div class="titulo-caja">SANCIONES</div>
+                    <table class="t-fina">
+                        <tr><th>A</th><th>C</th><th>E</th><th>D</th><th>Eq</th><th>S</th><th>P</th></tr>
+                        <tbody id="sancionesBody">
+                            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display: flex; flex-direction: column;">
+                    <div class="titulo-caja">OBSERVACIONES</div>
+                    <textarea id="observaciones" style="width:100%; flex-grow:1; border:none; resize:none; padding:2px; font-family:inherit;" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="inf-col-der">
+            <div class="caja-restante" style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; border: var(--borde-negro); height: 100%;">
+                <div style="border-right: 1px solid black; display:flex; flex-direction:column;">
+                    <div class="titulo-caja">APROBACIÓN</div>
+                    <div style="padding:2px; font-size:9px; display:flex; flex-direction:column; gap:8px;">
+                        <div>Arb. Nombre - País</div>
+                        <div style="border-bottom:1px solid #ccc">1°: <span id="arbitro1"></span></div>
+                        <div style="border-bottom:1px solid #ccc">2°: <span id="arbitro2"></span></div>
+                        <div style="border-bottom:1px solid #ccc">Anot: <span id="anotador"></span></div>
+                        <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                            Cap A: <span id="capitanA"></span>
+                            Cap B: <span id="capitanB"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-right: 1px solid black; display:flex; flex-direction:column;">
+                    <div class="titulo-caja">RESULTADOS</div>
+                    <table class="t-fina">
+                        <tr> <th colspan="3" id="nombreEquipoA">Equipo A</th> <th>S</th> <th colspan="3" id="nombreEquipoB">Equipo B</th> </tr>
+                        <tr> <th>T</th><th>S</th><th>G</th> <th></th> <th>G</th><th>S</th><th>T</th> </tr>
+                        <tbody id="resultadosBody">
+                        </tbody>
+                    </table>
+                    <div style="text-align:center; padding:2px; font-weight:bold; font-size:10px; border-top:1px solid black; margin-top: auto;">
+                        GANADOR: <span id="ganador"></span>
+                    </div>
+                </div>
+
+                <div style="display:flex; flex-direction:column;">
+                    <div class="titulo-caja">FIRMAS</div>
+                    <div style="flex-grow:1; padding:5px; display:flex; flex-direction:column; justify-content:space-around;">
+                        <div>Capitanes: <div style="border-bottom:1px solid black; height:10px;"></div></div>
+                        <div>Entrenadores: <div style="border-bottom:1px solid black; height:10px;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let partidoData = null;
+
+async function cargarPartido() {
+    const idPartido = document.getElementById('inputPartido').value;
+    const btnCargar = document.getElementById('btnCargar');
+    const btnImprimir = document.getElementById('btnImprimir');
+    const estado = document.getElementById('estado');
+
+    if (!idPartido) {
+        alert('Por favor ingrese un ID de partido');
+        return;
+    }
+
+    // Deshabilitar botón y mostrar estado
+    btnCargar.disabled = true;
+    btnImprimir.disabled = true;
+    estado.className = 'cargando';
+    estado.textContent = 'Cargando...';
+
+    try {
+        // 🧪 TEMPORAL: Token comentado para pruebas
+        // Descomentar las siguientes 4 líneas en producción:
+        // const token = localStorage.getItem('token');
+        // if (!token) {
+        //     throw new Error('No hay sesión activa. Por favor inicie sesión.');
+        // }
+
+        const response = await fetch(`http://localhost:8080/api/planilla/${idPartido}`, {
+            headers: {
+                // 🧪 TEMPORAL: Authorization comentado para pruebas
+                // 'Authorization': `Bearer ${token}`,  // Descomentar en producción
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Error al cargar el partido');
+        }
+
+        const data = await response.json();
+        partidoData = data.data;
+
+        // Llenar la planilla
+        llenarPlanilla(partidoData);
+
+        estado.className = 'listo';
+        estado.textContent = '✓ Listo para imprimir';
+        btnImprimir.disabled = false;
+
+    } catch (error) {
+        console.error('Error:', error);
+        estado.className = 'error';
+        estado.textContent = '✗ Error: ' + error.message;
+        alert('Error al cargar el partido: ' + error.message);
+    } finally {
+        btnCargar.disabled = false;
+    }
+}
+
+function llenarPlanilla(data) {
+    // HEADER
+    document.getElementById('competicion').textContent = `Campeonato #${data.partido.campeonato}`;
+    document.getElementById('numPartido').textContent = data.partido.numero_partido || data.partido.id;
+    document.getElementById('categoria').textContent = `Cat: ${data.partido.categoria}`;
+
+    // ÁRBITROS
+    if (data.arbitraje) {
+        document.getElementById('arbitro1').textContent = data.arbitraje.primer_arbitro?.nombre_completo || '';
+        document.getElementById('arbitro2').textContent = data.arbitraje.segundo_arbitro?.nombre_completo || '';
+        document.getElementById('anotador').textContent = data.arbitraje.anotador?.nombre || '';
+    }
+
+    // EQUIPOS
+    const equipoA = data.equipos.local;
+    const equipoB = data.equipos.visitante;
+    document.getElementById('nombreEquipoA').textContent = equipoA.nombre;
+    document.getElementById('nombreEquipoB').textContent = equipoB.nombre;
+
+    // CAPITANES
+    const capitanA = equipoA.plantilla.find(j => j.es_capitan);
+    const capitanB = equipoB.plantilla.find(j => j.es_capitan);
+    document.getElementById('capitanA').textContent = capitanA?.numero_dorsal || '';
+    document.getElementById('capitanB').textContent = capitanB?.numero_dorsal || '';
+
+    // RESULTADOS
+    const resultadosBody = document.getElementById('resultadosBody');
+    resultadosBody.innerHTML = '';
+
+    for (let i = 0; i < 5; i++) {
+        const set = data.sets[i];
+        const tr = document.createElement('tr');
+        if (set) {
+            tr.innerHTML = `
+                <td></td><td></td><td>${set.puntos_local}</td>
+                <td>${i + 1}</td>
+                <td>${set.puntos_visitante}</td><td></td><td></td>
+            `;
+        } else {
+            tr.innerHTML = `<td></td><td></td><td></td><td>${i + 1}</td><td></td><td></td><td></td>`;
+        }
+        resultadosBody.appendChild(tr);
+    }
+
+    // Totales
+    const trTotal = document.createElement('tr');
+    trTotal.style.background = '#eee';
+    trTotal.innerHTML = `
+        <td></td><td></td><td>${data.resultado.sets_local}</td>
+        <td>T</td>
+        <td>${data.resultado.sets_visitante}</td><td></td><td></td>
+    `;
+    resultadosBody.appendChild(trTotal);
+
+    // GANADOR
+    const ganador = data.resultado.ganador === 'local' ? equipoA.nombre : equipoB.nombre;
+    document.getElementById('ganador').textContent = `${ganador} ${data.resultado.sets_local} : ${data.resultado.sets_visitante}`;
+
+    // SETS
+    data.sets.forEach((set, index) => {
+        if (set && set.estado !== 'no_iniciado') {
+            crearSet(`set-${index + 1}`, index + 1, equipoA, equipoB, set);
+        }
+    });
+
+    // SANCIONES
+    if (data.sanciones && data.sanciones.length > 0) {
+        const sancionesBody = document.getElementById('sancionesBody');
+        sancionesBody.innerHTML = '';
+        data.sanciones.slice(0, 4).forEach(sancion => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${sancion.tipo_sancion || ''}</td>
+                <td>${sancion.equipo === 'local' ? 'A' : 'B'}</td>
+                <td></td>
+                <td>${sancion.numero_set || ''}</td>
+                <td>${sancion.numero_dorsal || ''}</td>
+                <td>${sancion.punto_local || ''}</td>
+                <td>${sancion.punto_visitante || ''}</td>
+            `;
+            sancionesBody.appendChild(tr);
+        });
+    }
+
+    // OBSERVACIONES
+    if (data.observaciones && data.observaciones.comentarios_arbitro) {
+        document.getElementById('observaciones').value = data.observaciones.comentarios_arbitro;
+    }
+}
+
+function crearSet(id, n, teamA, teamB, setData) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.className = 'set-box';
+
+    // Generar puntos
+    let ptsA = '', ptsB = '';
+    for(let i=0; i<12; i++) {
+        for(let col=0; col<4; col++) {
+            const num = i + 1 + (col * 12);
+            const classTachado = (setData && num <= setData.puntos_local) ? 'tachado' : '';
+            ptsA += `<div class="pt ${classTachado}">${num}</div>`;
+        }
+    }
+    for(let i=0; i<12; i++) {
+        for(let col=0; col<4; col++) {
+            const num = i + 1 + (col * 12);
+            const classTachado = (setData && num <= setData.puntos_visitante) ? 'tachado' : '';
+            ptsB += `<div class="pt ${classTachado}">${num}</div>`;
+        }
+    }
+
+    // Generar rotaciones con jugadores
+    let rotsA = '', rotsB = '';
+    const roms = ['I','II','III','IV','V','VI'];
+
+    // Formación inicial del set
+    const formacion = setData?.formacion_inicial;
+
+    roms.forEach((rom, idx) => {
+        let dorsalA = '', dorsalB = '';
+        if (formacion) {
+            const posKey = `posicion_${rom}`;
+            dorsalA = formacion.formacion_local?.[posKey] || '';
+            dorsalB = formacion.formacion_visitante?.[posKey] || '';
+        }
+
+        let sA = '', sB = '';
+        for(let k=1; k<=8; k++) {
+            sA += `<div class="sq"><span>${k}</span></div>`;
+            sB += `<div class="sq"><span>${k}</span></div>`;
+        }
+
+        rotsA += `<div class="jug-col">
+            <div class="cell-gray">${rom}</div>
+            <div class="cell-std">${dorsalA}</div>
+            <div class="cell-std"></div>
+            <div class="cell-std"></div>
+            <div class="saques">${sA}</div>
+        </div>`;
+
+        rotsB += `<div class="jug-col">
+            <div class="cell-gray">${rom}</div>
+            <div class="cell-std">${dorsalB}</div>
+            <div class="cell-std"></div>
+            <div class="cell-std"></div>
+            <div class="saques">${sB}</div>
+        </div>`;
+    });
+
+    el.innerHTML = `
+        <div class="set-lat"><div>In:</div><div>S</div></div>
+        <div class="col">
+            <div class="equipo-head"><div class="bola">${n % 2 === 1 ? 'A' : 'B'}</div>${teamA.nombre}</div>
+            <div class="rot-grid">${rotsA}</div>
+        </div>
+        <div class="pts-col">${ptsA}</div>
+        <div class="pts-col der">${ptsB}</div>
+        <div class="col">
+            <div class="equipo-head"><div class="bola">${n % 2 === 1 ? 'B' : 'A'}</div>${teamB.nombre}</div>
+            <div class="rot-grid">${rotsB}</div>
+        </div>
+        <div class="set-lat der"><div>Fin:</div><div style="transform:rotate(180deg)">SET ${n}</div></div>
+    `;
+}
+
+// Cargar automáticamente si hay ID en la URL
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const idPartido = urlParams.get('id');
+    if (idPartido) {
+        document.getElementById('inputPartido').value = idPartido;
+        cargarPartido();
+    }
+});
+</script>
+</body>
+</html>

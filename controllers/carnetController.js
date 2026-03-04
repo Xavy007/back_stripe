@@ -3,15 +3,42 @@ const CarnetService = require('../services/CarnetService');
 // CREATE - Solicitar un nuevo carnet
 const solicitarCarnet = async (req, res) => {
     try {
-        console.log(req.body);
-        const { id_jugador, id_gestion, solicitado_por, duracion_dias } = req.body;
-        
-        const resultado = await CarnetService.solicitarCarnet(
+        console.log('📋 Body recibido:', req.body);
+        console.log('📷 Foto path:', req.body.fotoPath);
+
+        const {
             id_jugador,
             id_gestion,
+            id_categoria,
+            numero_dorsal,
+            posicion,
             solicitado_por,
-            duracion_dias
-        );
+            duracion_dias,
+            observaciones,
+            estado_carnet
+        } = req.body;
+
+        const fotoPath = req.body.fotoPath; // Ruta de la foto guardada por multer
+
+        const datosCarnet = {
+            id_jugador,
+            id_gestion,
+            id_categoria: id_categoria || null,
+            numero_dorsal: numero_dorsal || null,
+            posicion: posicion || null,
+            foto_carnet: fotoPath || null,
+            solicitado_por,
+            duracion_dias: duracion_dias || 365,
+            observaciones: observaciones || null,
+            estado_carnet: estado_carnet || 'pendiente'
+        };
+
+        console.log('📋 Datos del carnet a crear:', datosCarnet);
+
+        const resultado = await CarnetService.solicitarCarnet(datosCarnet);
+
+        console.log('✅ Carnet creado exitosamente:', resultado.carnet);
+        console.log('📷 Foto guardada en:', resultado.carnet.foto_carnet);
 
         res.status(201).json({
             success: true,
@@ -19,6 +46,7 @@ const solicitarCarnet = async (req, res) => {
             data: resultado.carnet
         });
     } catch (error) {
+        console.error('❌ Error solicitando carnet:', error);
         res.status(400).json({
             success: false,
             message: error.message
@@ -72,8 +100,12 @@ const cancelarCarnet = async (req, res) => {
 const obtenerCarnetPorId = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log('📋 Obteniendo carnet por ID:', id);
 
         const resultado = await CarnetService.obtenerCarnet(id);
+        console.log('📋 Carnet obtenido del servicio:', resultado.carnet);
+        console.log('📋 ¿Tiene jugador?:', !!resultado.carnet.jugador);
+        console.log('📋 ¿Tiene id_jugador?:', resultado.carnet.id_jugador);
 
         res.status(200).json({
             success: true,
@@ -81,6 +113,7 @@ const obtenerCarnetPorId = async (req, res) => {
             data: resultado.carnet
         });
     } catch (error) {
+        console.error('❌ Error obteniendo carnet:', error);
         res.status(404).json({
             success: false,
             message: error.message

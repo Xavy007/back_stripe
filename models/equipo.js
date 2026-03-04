@@ -4,11 +4,11 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Equipo extends Model {
     static associate(models) {
-      Equipo.belongsTo(models.Club, { foreignKey: 'id_club' });
-      Equipo.belongsTo(models.Categoria, { foreignKey: 'id_categoria' });
-      Equipo.hasMany(models.Participacion, { foreignKey: 'id_equipo' });
-      Equipo.hasMany(models.TablaPosiciones, { foreignKey: 'id_equipo' });
-      Equipo.hasMany(models.HistorialCampeonatos, { foreignKey: 'id_equipo' });
+      Equipo.belongsTo(models.Club, { foreignKey: 'id_club', as: 'club' });
+      Equipo.belongsTo(models.Categoria, { foreignKey: 'id_categoria', as: 'categoria' });
+      Equipo.hasMany(models.Participacion, { foreignKey: 'id_equipo', as: 'participaciones' });
+      Equipo.hasMany(models.TablaPosiciones, { foreignKey: 'id_equipo', as: 'tablaPosiciones' });
+      Equipo.hasMany(models.HistorialCampeonatos, { foreignKey: 'id_equipo', as: 'historialCampeonatos' });
     }
   }
 
@@ -65,13 +65,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    f_reg: {
+    freg: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
       validate: {
         isDate: {
-          msg: 'f_reg debe ser una fecha válida'
+          msg: 'freg debe ser una fecha válida'
         }
       }
     },

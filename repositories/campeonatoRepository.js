@@ -1,4 +1,4 @@
-const { Campeonato } = require('../models');
+const { Campeonato, CampeonatoCategoria, Categoria } = require('../models');
 
 // CREATE
 const crearCampeonato = async (data) => {
@@ -7,8 +7,20 @@ const crearCampeonato = async (data) => {
 
 // READ - Obtener todos los campeonatos activos
 const obtenerCampeonatos = async () => {
-    return await Campeonato.findAll({ 
-        where: { estado: true }
+    return await Campeonato.findAll({
+        where: { estado: true },
+        include: [
+            {
+                model: CampeonatoCategoria,
+                as: 'campeonatoCategorias',
+                include: [
+                    {
+                        model: Categoria,
+                        as: 'categoria'
+                    }
+                ]
+            }
+        ]
     });
 };
 

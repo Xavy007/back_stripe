@@ -285,6 +285,26 @@ const eliminarEquipo = async (id_equipo) => {
     }
 };
 
+// Obtener jugadores de un equipo específico (con filtro opcional por gestión)
+const obtenerJugadoresDeEquipo = async (id_equipo, id_gestion = null) => {
+    try {
+        const jugadores = await EquipoRepository.obtenerJugadoresDeEquipo(id_equipo, id_gestion);
+        return jugadores;
+    } catch (error) {
+        throw new Error(`Error al obtener jugadores del equipo: ${error.message}`);
+    }
+};
+
+// Obtener plantilla habilitada (participaciones) de un equipo
+const obtenerPlantillaHabilitada = async (id_equipo, id_campeonato = null) => {
+    try {
+        const plantilla = await EquipoRepository.obtenerPlantillaHabilitada(id_equipo, id_campeonato);
+        return plantilla;
+    } catch (error) {
+        throw new Error(`Error al obtener plantilla habilitada: ${error.message}`);
+    }
+};
+
 module.exports = {
     crearEquipo,
     obtenerEquipos,
@@ -296,5 +316,7 @@ module.exports = {
     obtenerEquiposPorClubYCategoria,
     obtenerEquipoConRelaciones,
     actualizarEquipo,
-    eliminarEquipo
+    eliminarEquipo,
+    obtenerJugadoresDeEquipo,
+    obtenerPlantillaHabilitada
 };

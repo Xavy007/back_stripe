@@ -13,6 +13,8 @@ router.get('/club/:id_club', EquipoController.obtenerEquiposPorClub);           
 router.get('/categoria/:id_categoria', EquipoController.obtenerEquiposPorCategoria);               // GET /api/equipo/categoria/:id_categoria
 router.get('/club/:id_club/categoria/:id_categoria', EquipoController.obtenerEquiposPorClubYCategoria); // GET /api/equipo/club/:id_club/categoria/:id_categoria
 router.get('/relaciones/:id', EquipoController.obtenerEquipoConRelaciones);                        // GET /api/equipo/relaciones/:id
+router.get('/:id/jugadores', EquipoController.obtenerJugadoresDeEquipo);                           // GET /api/equipo/:id/jugadores
+router.get('/:id/plantilla', EquipoController.obtenerPlantillaHabilitada);                         // GET /api/equipo/:id/plantilla
 router.get('/:id', EquipoController.obtenerEquipoPorId);                                           // GET /api/equipo/:id
 router.put('/:id', EquipoController.actualizarEquipo);                                             // PUT /api/equipo/:id
 router.delete('/:id', EquipoController.eliminarEquipo);                                            // DELETE /api/equipo/:id

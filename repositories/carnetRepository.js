@@ -1,5 +1,5 @@
 'use strict';
-const { Carnet, Jugador, GestionCampeonato, Persona } = require('../models');
+const { Carnet, Jugador, GestionCampeonato, Persona, Club } = require('../models');
 const { Op } = require('sequelize');
 
 class CarnetRepository {
@@ -32,7 +32,10 @@ class CarnetRepository {
           {
             model: Jugador,
             as: 'jugador',
-            include: [{ model: Persona }]
+            include: [
+              { model: Persona },
+              { model: Club, as: 'Club' }
+            ]
           },
           {
             model: GestionCampeonato,
@@ -378,7 +381,10 @@ class CarnetRepository {
           {
             model: Jugador,
             as: 'jugador',
-            include: [{ model: Persona }]
+            include: [
+              { model: Persona },
+              { model: Club, as: 'Club' }
+            ]
           },
           {
             model: GestionCampeonato,

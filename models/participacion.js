@@ -28,11 +28,8 @@ module.exports = (sequelize, DataTypes) => {
         as: 'categoria'
       });
 
-      // Participacion → CampeonatoCategoria (Muchos a Uno)
-      Participacion.belongsTo(models.CampeonatoCategoria, {
-        foreignKey: 'id_cc',
-        as: 'campeonatoCategoria'
-      });
+      // NOTA: No hay relación directa con CampeonatoCategoria porque id_cc no existe en la tabla
+      // La relación se puede obtener mediante id_campeonato + id_categoria
     }
 
     // ===== GETTERS =====
@@ -182,19 +179,13 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'FK → Categorias (en cuál categoría)'
     },
 
+    // NOTA: id_cc no existe en la base de datos
+    // La relación campeonato-categoría se identifica con id_campeonato + id_categoria
+
     id_cc: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'CampeonatoCategorias',
-        key: 'id_cc'
-      },
-      validate: {
-        notNull: {
-          msg: 'La categoría-campeonato es requerida'
-        }
-      },
-      comment: 'FK → CampeonatoCategorias (referencia cruzada)'
+      type: DataTypes.VIRTUAL,
+      allowNull: true,
+      comment: 'Campo VIRTUAL - no se guarda en BD. Solo para compatibilidad con código legacy'
     },
 
     dorsal: {

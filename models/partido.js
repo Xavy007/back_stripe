@@ -77,8 +77,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     id_cancha: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      comment: 'FK → Canchas'
+      allowNull: true,
+      comment: 'FK → Canchas (se asigna después de generar el fixture)'
     },
     equipo_local: {
       type: DataTypes.INTEGER,

@@ -31,6 +31,16 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       defaultValue:0
     },
+    foto_jugador: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Ruta de la foto del jugador'
+    },
+    dorsal: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'Número de dorsal del jugador'
+    },
     id_club: {
       type:DataTypes.INTEGER,
       allowNull:false,

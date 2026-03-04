@@ -11,8 +11,21 @@ class CarnetService {
    * @param {number} duracion_dias - Duración en días (default: 365)
    * @returns {Promise<Object>}
    */
-  static async solicitarCarnet(id_jugador, id_gestion, solicitado_por, duracion_dias = 365) {
+  static async solicitarCarnet(datos) {
     try {
+      const {
+        id_jugador,
+        id_gestion,
+        id_categoria,
+        numero_dorsal,
+        posicion,
+        foto_carnet,
+        solicitado_por,
+        duracion_dias = 365,
+        observaciones,
+        estado_carnet = 'pendiente'
+      } = datos;
+
       // 1. Validar que el jugador existe
       const jugador = await Jugador.findByPk(id_jugador);
       if (!jugador) {
@@ -48,12 +61,17 @@ class CarnetService {
       const carnetData = {
         id_jugador,
         id_gestion,
+        id_categoria,
+        numero_dorsal,
+        posicion,
+        foto_carnet,
         numero_carnet,
         fecha_solicitud,
         fecha_vencimiento,
         duracion_dias,
-        estado_carnet: 'pendiente',
-        solicitado_por
+        estado_carnet,
+        solicitado_por,
+        observaciones
       };
 
       const carnet = await CarnetRepository.crearCarnet(carnetData);

@@ -1,20 +1,23 @@
-# Usa una imagen oficial de Node.js
-FROM node:18-alpine 
+# Imagen base Node.js 18 (Alpine = imagen liviana)
+FROM node:22-alpine
 
-# Establece el directorio de trabajo dentro del contenedor
+# Directorio de trabajo dentro del contenedor
 WORKDIR /usr/src/app
 
-# Copia los archivos de dependencias
+# Copiar dependencias primero (aprovecha cache de Docker)
 COPY package*.json ./
 
-# Instala las dependencias
-RUN npm install
+# Instalar dependencias de producción
+RUN npm install --omit=dev
 
-# Copia el resto del código fuente
+# Copiar el resto del código fuente
 COPY . .
 
-# Expone el puerto de tu app (ajustalo si usás otro)
-EXPOSE 3000
+# Crear carpeta de uploads (logos y fotos de jugadores)
+RUN mkdir -p uploads
 
-# Comando para iniciar la app
-CMD ["npm", "start"]
+# Puerto que expone la app (debe coincidir con PORT en .env)
+EXPOSE 8080
+
+# Comando de inicio
+CMD ["node", "server.js"]

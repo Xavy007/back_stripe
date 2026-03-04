@@ -127,32 +127,6 @@ const crearUsuarioParaPersonaExistente = async (req, res) => {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await usuarioService.obtenerUsuarios();

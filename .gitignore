@@ -14,10 +14,34 @@ npm-debug.log*
 dist/
 build/
 
-# IDEs
+# IDEs y herramientas locales
 .vscode/
 .idea/
+.claude/
 
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Archivos de documentacion interna (no son parte del proyecto)
+docs/
+INSTRUCCIONES_PRUEBA_PLANILLA.md
+README.txt
+
+# Scripts de prueba sueltos
+test-carnet-foto.js
+test-partido-completo.js
+test-planilla-completa.js
+test-reportes-data.js
+test-socket-client.js
+crear-usuario-admin.sql
+
+# Paginas HTML de prueba exploratoria
+tests/pagina.html
+tests/planilla.html
+tests/test-campeonato.html
+tests/test-gestiones.html
+tests/documentop.html
+
+# Archivos de subida de usuarios
+uploads/

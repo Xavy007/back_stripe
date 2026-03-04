@@ -1,4 +1,4 @@
-const { CampeonatoCategoria } = require('../models');
+const { CampeonatoCategoria, Categoria, Campeonato } = require('../models');
 
 // CREATE
 const crearCampeonatoCategoria = async (data) => {
@@ -7,8 +7,20 @@ const crearCampeonatoCategoria = async (data) => {
 
 // READ - Obtener todas las campeonato-categorías activas
 const obtenerCampeonatoCategorias = async () => {
-    return await CampeonatoCategoria.findAll({ 
-        where: { estado: true }
+    return await CampeonatoCategoria.findAll({
+        where: { estado: true },
+        include: [
+            {
+                model: Categoria,
+                as: 'categoria',
+                attributes: ['id_categoria', 'nombre', 'descripcion', 'genero']
+            },
+            {
+                model: Campeonato,
+                as: 'campeonato',
+                attributes: ['id_campeonato', 'nombre', 'tipo']
+            }
+        ]
     });
 };
 
@@ -19,16 +31,36 @@ const obtenerTodasLasCampeonatoCategorias = async () => {
 
 // READ - Obtener una campeonato-categoría por ID
 const obtenerCampeonatoCategoriaPorId = async (id_cc) => {
-    return await CampeonatoCategoria.findByPk(id_cc);
+    return await CampeonatoCategoria.findByPk(id_cc, {
+        include: [
+            {
+                model: Categoria,
+                as: 'categoria',
+                attributes: ['id_categoria', 'nombre', 'descripcion', 'genero', 'edad_inicio', 'edad_limite']
+            },
+            {
+                model: Campeonato,
+                as: 'campeonato',
+                attributes: ['id_campeonato', 'nombre', 'tipo']
+            }
+        ]
+    });
 };
 
 // READ - Obtener campeonato-categorías por campeonato
 const obtenerCampeonatoCategoriasPorCampeonato = async (id_campeonato) => {
     return await CampeonatoCategoria.findAll({
-        where: { 
+        where: {
             id_campeonato: id_campeonato,
-            estado: true 
-        }
+            estado: true
+        },
+        include: [
+            {
+                model: Categoria,
+                as: 'categoria',
+                attributes: ['id_categoria', 'nombre', 'descripcion', 'genero', 'edad_inicio', 'edad_limite']
+            }
+        ]
     });
 };
 

@@ -62,6 +62,21 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id_categoria',         // PK de la tabla Categoria
       }
     },
+    numero_dorsal: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: 'Número de dorsal del jugador para este carnet'
+    },
+    posicion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Posición del jugador en el campo'
+    },
+    foto_carnet: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Ruta de la foto del carnet'
+    },
     fecha_solicitud: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - Sistema de Voleibol DOTSET</title>
+    <style>
+        :root {
+            --color-primario: #2196F3;
+            --color-exito: #4CAF50;
+            --color-advertencia: #FFC107;
+            --color-error: #f44336;
+            --color-fondo: #f5f5f5;
+            --color-fondo-oscuro: #333;
+            --color-borde: #ddd;
+            --fuente: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--fuente);
+            background: var(--color-fondo);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--color-fondo-oscuro);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .header-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .header-links a:hover {
+            opacity: 1;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Filtros */
+        .filtros {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filtro-grupo label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .filtro-grupo input,
+        .filtro-grupo select {
+            padding: 10px 15px;
+            border: 1px solid var(--color-borde);
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .filtro-grupo input:focus,
+        .filtro-grupo select:focus {
+            outline: none;
+            border-color: var(--color-primario);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primario {
+            background: var(--color-primario);
+            color: white;
+        }
+
+        .btn-primario:hover {
+            background: #1976D2;
+        }
+
+        .btn-exito {
+            background: var(--color-exito);
+            color: white;
+        }
+
+        .btn-exito:hover {
+            background: #388E3C;
+        }
+
+        /* Tabs de reportes */
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        .tab.activo {
+            color: var(--color-primario);
+            border-bottom-color: var(--color-primario);
+            background: #f0f7ff;
+        }
+
+        /* Contenido de reportes */
+        .reporte-contenido {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .reporte-panel {
+            display: none;
+        }
+
+        .reporte-panel.activo {
+            display: block;
+        }
+
+        /* Tablas */
+        .tabla-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        th {
+            background: var(--color-fondo);
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-oro {
+            background: #FFD700;
+            color: #333;
+        }
+
+        .badge-plata {
+            background: #C0C0C0;
+            color: #333;
+        }
+
+        .badge-bronce {
+            background: #CD7F32;
+            color: white;
+        }
+
+        .badge-mvp {
+            background: var(--color-primario);
+            color: white;
+        }
+
+        .badge-sancion {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .badge-advertencia {
+            background: var(--color-advertencia);
+            color: #333;
+        }
+
+        .badge-victoria {
+            background: var(--color-exito);
+            color: white;
+        }
+
+        .badge-derrota {
+            background: #999;
+            color: white;
+        }
+
+        /* Cards de estadisticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card.verde {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-card.naranja {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.azul {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-valor {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        /* Barra de progreso */
+        .barra-progreso {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .barra-progreso-valor {
+            background: var(--color-exito);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        /* Estado de carga */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--color-borde);
+            border-top-color: var(--color-primario);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .mensaje-vacio {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .mensaje-vacio i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Detalle jugador */
+        .jugador-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--color-borde);
+        }
+
+        .jugador-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--color-primario);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .jugador-info h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .jugador-info p {
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .filtros {
+                flex-direction: column;
+            }
+
+            .filtro-grupo {
+                width: 100%;
+            }
+
+            .filtro-grupo input,
+            .filtro-grupo select {
+                width: 100%;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                min-width: 120px;
+            }
+        }
+
+        /* Impresion */
+        @media print {
+            .header, .filtros, .tabs {
+                display: none;
+            }
+
+            .reporte-contenido {
+                box-shadow: none;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Reportes - DOTSET</h1>
+        <div class="header-links">
+            <a href="/public/planilla-digital.html">Planilla Digital</a>
+            <a href="#" onclick="window.print()">Imprimir</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Filtros -->
+        <div class="filtros">
+            <div class="filtro-grupo">
+                <label>Campeonato</label>
+                <select id="selectCampeonato">
+                    <option value="">Todos los campeonatos</option>
+                    <option value="1" selected>Campeonato 2026</option>
+                </select>
+            </div>
+            <div class="filtro-grupo">
+                <label>Categoria</label>
+                <select id="selectCategoria">
+                    <option value="">Todas las categorias</option>
+                    <option value="1">Masculino Adulto</option>
+                    <option value="2">Femenino Adulto</option>
+                </select>
+            </div>
+            <div class="filtro-grupo">
+                <label>Jornada</label>
+                <select id="selectJornada">
+                    <option value="">Todas</option>
+                    <option value="1" selected>Jornada 1</option>
+                    <option value="2">Jornada 2</option>
+                </select>
+            </div>
+            <button class="btn btn-primario" onclick="cargarReporteActivo()">Buscar</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab activo" data-tab="goleadores" onclick="cambiarTab('goleadores')">
+                Top Goleadores
+            </button>
+            <button class="tab" data-tab="equipos" onclick="cambiarTab('equipos')">
+                Estadisticas Equipos
+            </button>
+            <button class="tab" data-tab="jugador" onclick="cambiarTab('jugador')">
+                Detalle Jugador
+            </button>
+            <button class="tab" data-tab="sanciones" onclick="cambiarTab('sanciones')">
+                Sanciones
+            </button>
+            <button class="tab" data-tab="jornada" onclick="cambiarTab('jornada')">
+                Resumen Jornada
+            </button>
+            <button class="tab" data-tab="comparativa" onclick="cambiarTab('comparativa')">
+                Comparativa
+            </button>
+        </div>
+
+        <!-- Contenido de reportes -->
+        <div class="reporte-contenido">
+            <!-- Panel: Top Goleadores -->
+            <div id="panel-goleadores" class="reporte-panel activo">
+                <h3 style="margin-bottom: 20px;">Ranking de Goleadores</h3>
+                <div id="contenido-goleadores" class="tabla-container">
+                    <div class="loading">Cargando datos...</div>
+                </div>
+            </div>
+
+            <!-- Panel: Estadisticas Equipos -->
+            <div id="panel-equipos" class="reporte-panel">
+                <h3 style="margin-bottom: 20px;">Estadisticas por Equipo</h3>
+                <div id="contenido-equipos" class="tabla-container">
+                    <div class="loading">Cargando datos...</div>
+                </div>
+            </div>
+
+            <!-- Panel: Detalle Jugador -->
+            <div id="panel-jugador" class="reporte-panel">
+                <div class="filtros" style="margin-bottom: 20px; box-shadow: none; padding: 0;">
+                    <div class="filtro-grupo">
+                        <label>ID del Jugador</label>
+                        <input type="number" id="inputJugadorId" placeholder="Ej: 2" value="2">
+                    </div>
+                    <button class="btn btn-primario" onclick="cargarDetalleJugador()">Ver Estadisticas</button>
+                </div>
+                <div id="contenido-jugador">
+                    <div class="mensaje-vacio">Ingrese un ID de jugador para ver sus estadisticas</div>
+                </div>
+            </div>
+
+            <!-- Panel: Sanciones -->
+            <div id="panel-sanciones" class="reporte-panel">
+                <h3 style="margin-bottom: 20px;">Reporte de Sanciones</h3>
+                <div id="contenido-sanciones" class="tabla-container">
+                    <div class="loading">Cargando datos...</div>
+                </div>
+            </div>
+
+            <!-- Panel: Resumen Jornada -->
+            <div id="panel-jornada" class="reporte-panel">
+                <h3 style="margin-bottom: 20px;">Resumen de Jornada</h3>
+                <div id="contenido-jornada">
+                    <div class="loading">Cargando datos...</div>
+                </div>
+            </div>
+
+            <!-- Panel: Comparativa -->
+            <div id="panel-comparativa" class="reporte-panel">
+                <div class="filtros" style="margin-bottom: 20px; box-shadow: none; padding: 0;">
+                    <div class="filtro-grupo">
+                        <label>Equipo 1</label>
+                        <input type="number" id="inputEquipo1" placeholder="ID Equipo 1" value="1">
+                    </div>
+                    <div class="filtro-grupo">
+                        <label>Equipo 2</label>
+                        <input type="number" id="inputEquipo2" placeholder="ID Equipo 2" value="2">
+                    </div>
+                    <button class="btn btn-primario" onclick="cargarComparativa()">Comparar</button>
+                </div>
+                <div id="contenido-comparativa">
+                    <div class="mensaje-vacio">Seleccione dos equipos para ver el historial de enfrentamientos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api/reportes';
+        let tabActivo = 'goleadores';
+
+        // Cambiar tab activo
+        function cambiarTab(tab) {
+            // Actualizar tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('activo');
+
+            // Actualizar paneles
+            document.querySelectorAll('.reporte-panel').forEach(p => p.classList.remove('activo'));
+            document.getElementById(`panel-${tab}`).classList.add('activo');
+
+            tabActivo = tab;
+
+            // Cargar datos si no es jugador ni comparativa
+            if (tab !== 'jugador' && tab !== 'comparativa') {
+                cargarReporteActivo();
+            }
+        }
+
+        // Obtener filtros actuales
+        function obtenerFiltros() {
+            return {
+                idcampeonato: document.getElementById('selectCampeonato').value,
+                idcategoria: document.getElementById('selectCategoria').value,
+                idjornada: document.getElementById('selectJornada').value
+            };
+        }
+
+        // Cargar reporte segun tab activo
+        function cargarReporteActivo() {
+            const filtros = obtenerFiltros();
+
+            switch (tabActivo) {
+                case 'goleadores':
+                    cargarGoleadores(filtros);
+                    break;
+                case 'equipos':
+                    cargarEstadisticasEquipos(filtros);
+                    break;
+                case 'sanciones':
+                    cargarSanciones(filtros);
+                    break;
+                case 'jornada':
+                    cargarResumenJornada(filtros.idjornada || 1);
+                    break;
+            }
+        }
+
+        // 1. CARGAR TOP GOLEADORES
+        async function cargarGoleadores(filtros) {
+            const container = document.getElementById('contenido-goleadores');
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const params = new URLSearchParams();
+                if (filtros.idcampeonato) params.append('idcampeonato', filtros.idcampeonato);
+                if (filtros.idcategoria) params.append('idcategoria', filtros.idcategoria);
+                params.append('limite', '20');
+
+                const response = await fetch(`${API_BASE}/goleadores?${params}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.goleadores.length === 0) {
+                    container.innerHTML = '<div class="mensaje-vacio">No hay datos de goleadores disponibles</div>';
+                    return;
+                }
+
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-valor">${data.data.total_partidos}</div>
+                            <div class="stat-label">Partidos Analizados</div>
+                        </div>
+                        <div class="stat-card verde">
+                            <div class="stat-valor">${data.data.goleadores.length}</div>
+                            <div class="stat-label">Jugadores en Ranking</div>
+                        </div>
+                        <div class="stat-card naranja">
+                            <div class="stat-valor">${data.data.goleadores[0]?.puntos_totales || 0}</div>
+                            <div class="stat-label">Puntos del Lider</div>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th>Jugador</th>
+                                <th>Posicion</th>
+                                <th class="text-center">PJ</th>
+                                <th class="text-center">Puntos</th>
+                                <th class="text-center">Promedio</th>
+                                <th class="text-center">Aces</th>
+                                <th class="text-center">Bloqueos</th>
+                                <th class="text-center">Efect. Ataque</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.data.goleadores.forEach((g, i) => {
+                    let badge = '';
+                    if (i === 0) badge = '<span class="badge badge-oro">1</span>';
+                    else if (i === 1) badge = '<span class="badge badge-plata">2</span>';
+                    else if (i === 2) badge = '<span class="badge badge-bronce">3</span>';
+                    else badge = `<span style="color:#666">${i + 1}</span>`;
+
+                    html += `
+                        <tr>
+                            <td class="text-center">${badge}</td>
+                            <td><strong>${g.nombre || 'Sin nombre'}</strong> <small style="color:#999">#${g.dorsal}</small></td>
+                            <td>${g.posicion || '-'}</td>
+                            <td class="text-center">${g.partidos_jugados}</td>
+                            <td class="text-center"><strong>${g.puntos_totales}</strong></td>
+                            <td class="text-center">${g.promedio_puntos}</td>
+                            <td class="text-center">${g.estadisticas?.aces || 0}</td>
+                            <td class="text-center">${g.estadisticas?.bloqueos || 0}</td>
+                            <td class="text-center">
+                                <div class="barra-progreso" style="width:80px; display:inline-block; vertical-align:middle;">
+                                    <div class="barra-progreso-valor" style="width:${g.estadisticas?.efectividad_ataque || 0}%"></div>
+                                </div>
+                                <span style="margin-left:5px">${g.estadisticas?.efectividad_ataque || 0}%</span>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos. Verifique que el servidor este corriendo.</div>';
+            }
+        }
+
+        // 2. CARGAR ESTADISTICAS DE EQUIPOS
+        async function cargarEstadisticasEquipos(filtros) {
+            const container = document.getElementById('contenido-equipos');
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const params = new URLSearchParams();
+                if (filtros.idcampeonato) params.append('idcampeonato', filtros.idcampeonato);
+                if (filtros.idcategoria) params.append('idcategoria', filtros.idcategoria);
+
+                const response = await fetch(`${API_BASE}/estadisticas-equipos?${params}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.equipos.length === 0) {
+                    container.innerHTML = '<div class="mensaje-vacio">No hay datos de equipos disponibles</div>';
+                    return;
+                }
+
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Equipo</th>
+                                <th class="text-center">PJ</th>
+                                <th class="text-center">Puntos</th>
+                                <th class="text-center">Sets G/P</th>
+                                <th class="text-center">Aces</th>
+                                <th class="text-center">Bloqueos</th>
+                                <th class="text-center">Efect. Ataque</th>
+                                <th class="text-center">Efect. Recepcion</th>
+                                <th class="text-center">Errores</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.data.equipos.forEach(e => {
+                    const diffSets = e.resumen.diferencia_sets;
+                    const diffColor = diffSets > 0 ? 'color:#4CAF50' : (diffSets < 0 ? 'color:#f44336' : '');
+
+                    html += `
+                        <tr>
+                            <td><strong>${e.nombre_equipo || 'Sin nombre'}</strong></td>
+                            <td class="text-center">${e.partidos_jugados}</td>
+                            <td class="text-center"><strong>${e.resumen.puntos_a_favor}</strong></td>
+                            <td class="text-center">
+                                ${e.resumen.sets_ganados}/${e.resumen.sets_perdidos}
+                                <small style="${diffColor}">(${diffSets > 0 ? '+' : ''}${diffSets})</small>
+                            </td>
+                            <td class="text-center">${e.saque.aces}</td>
+                            <td class="text-center">${e.bloqueo.exitosos}</td>
+                            <td class="text-center">
+                                <div class="barra-progreso" style="width:60px; display:inline-block; vertical-align:middle;">
+                                    <div class="barra-progreso-valor" style="width:${e.ataque.efectividad}%"></div>
+                                </div>
+                                ${e.ataque.efectividad}%
+                            </td>
+                            <td class="text-center">
+                                <div class="barra-progreso" style="width:60px; display:inline-block; vertical-align:middle;">
+                                    <div class="barra-progreso-valor" style="width:${e.recepcion.efectividad}%; background:#2196F3"></div>
+                                </div>
+                                ${e.recepcion.efectividad}%
+                            </td>
+                            <td class="text-center" style="color:#f44336">${e.errores_totales}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos</div>';
+            }
+        }
+
+        // 3. CARGAR DETALLE DE JUGADOR
+        async function cargarDetalleJugador() {
+            const container = document.getElementById('contenido-jugador');
+            const idjugador = document.getElementById('inputJugadorId').value;
+
+            if (!idjugador) {
+                container.innerHTML = '<div class="mensaje-vacio">Ingrese un ID de jugador</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const filtros = obtenerFiltros();
+                const params = new URLSearchParams();
+                if (filtros.idcampeonato) params.append('idcampeonato', filtros.idcampeonato);
+
+                const response = await fetch(`${API_BASE}/jugador/${idjugador}?${params}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.mensaje) {
+                    container.innerHTML = `<div class="mensaje-vacio">${data.data.mensaje || 'No se encontraron datos del jugador'}</div>`;
+                    return;
+                }
+
+                const j = data.data;
+
+                let html = `
+                    <div class="jugador-header">
+                        <div class="jugador-avatar">${j.jugador.dorsal}</div>
+                        <div class="jugador-info">
+                            <h2>${j.jugador.nombre}</h2>
+                            <p>${j.jugador.posicion} | #${j.jugador.dorsal}</p>
+                        </div>
+                        ${j.resumen.mvp_count > 0 ? '<span class="badge badge-mvp">MVP x' + j.resumen.mvp_count + '</span>' : ''}
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-valor">${j.resumen.partidos_jugados}</div>
+                            <div class="stat-label">Partidos</div>
+                        </div>
+                        <div class="stat-card verde">
+                            <div class="stat-valor">${j.resumen.puntos_totales}</div>
+                            <div class="stat-label">Puntos Totales</div>
+                        </div>
+                        <div class="stat-card naranja">
+                            <div class="stat-valor">${j.resumen.promedio_puntos}</div>
+                            <div class="stat-label">Promedio/Partido</div>
+                        </div>
+                        <div class="stat-card azul">
+                            <div class="stat-valor">${j.estadisticas.ataque.efectividad}%</div>
+                            <div class="stat-label">Efectividad Ataque</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 20px 0 10px">Estadisticas Detalladas</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th class="text-center">Intentos</th>
+                                <th class="text-center">Exitosos</th>
+                                <th class="text-center">Errores</th>
+                                <th class="text-center">Efectividad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Ataque</strong></td>
+                                <td class="text-center">${j.estadisticas.ataque.intentos}</td>
+                                <td class="text-center">${j.estadisticas.ataque.exitosos}</td>
+                                <td class="text-center">${j.estadisticas.ataque.errores}</td>
+                                <td class="text-center">${j.estadisticas.ataque.efectividad}%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Saque</strong> <small>(Aces: ${j.estadisticas.saque.aces})</small></td>
+                                <td class="text-center">${j.estadisticas.saque.intentos}</td>
+                                <td class="text-center">${j.estadisticas.saque.aces}</td>
+                                <td class="text-center">${j.estadisticas.saque.errores}</td>
+                                <td class="text-center">${j.estadisticas.saque.efectividad}%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bloqueo</strong></td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">${j.estadisticas.bloqueo.total} (${j.estadisticas.bloqueo.solos} solos)</td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">${j.estadisticas.bloqueo.promedio}/partido</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recepcion</strong></td>
+                                <td class="text-center">${j.estadisticas.recepcion.intentos}</td>
+                                <td class="text-center">${j.estadisticas.recepcion.perfectas + j.estadisticas.recepcion.buenas}</td>
+                                <td class="text-center">${j.estadisticas.recepcion.errores}</td>
+                                <td class="text-center">${j.estadisticas.recepcion.efectividad}%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Defensa</strong></td>
+                                <td class="text-center">${j.estadisticas.defensa.intentos}</td>
+                                <td class="text-center">${j.estadisticas.defensa.exitosas}</td>
+                                <td class="text-center">${j.estadisticas.defensa.errores}</td>
+                                <td class="text-center">${j.estadisticas.defensa.efectividad}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    ${j.sanciones.amarillas > 0 || j.sanciones.rojas > 0 ? `
+                        <h4 style="margin: 20px 0 10px; color: #f44336">Sanciones</h4>
+                        <p>
+                            ${j.sanciones.advertencias > 0 ? `<span class="badge badge-advertencia">Advertencias: ${j.sanciones.advertencias}</span> ` : ''}
+                            ${j.sanciones.amarillas > 0 ? `<span class="badge badge-advertencia">Amarillas: ${j.sanciones.amarillas}</span> ` : ''}
+                            ${j.sanciones.rojas > 0 ? `<span class="badge badge-sancion">Rojas: ${j.sanciones.rojas}</span>` : ''}
+                        </p>
+                    ` : ''}
+                `;
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos</div>';
+            }
+        }
+
+        // 4. CARGAR SANCIONES
+        async function cargarSanciones(filtros) {
+            const container = document.getElementById('contenido-sanciones');
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const params = new URLSearchParams();
+                if (filtros.idcampeonato) params.append('idcampeonato', filtros.idcampeonato);
+                if (filtros.idcategoria) params.append('idcategoria', filtros.idcategoria);
+
+                const response = await fetch(`${API_BASE}/sanciones?${params}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.total_sanciones === 0) {
+                    container.innerHTML = '<div class="mensaje-vacio">No hay sanciones registradas</div>';
+                    return;
+                }
+
+                const r = data.data.resumen_por_tipo;
+
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stat-card" style="background:#FFC107">
+                            <div class="stat-valor">${r.advertencia || 0}</div>
+                            <div class="stat-label">Advertencias</div>
+                        </div>
+                        <div class="stat-card" style="background:#FF9800">
+                            <div class="stat-valor">${(r.penalty || 0) + (r.penalty_acumulado || 0)}</div>
+                            <div class="stat-label">Penalties</div>
+                        </div>
+                        <div class="stat-card" style="background:#f44336">
+                            <div class="stat-valor">${r.expulsion || 0}</div>
+                            <div class="stat-label">Expulsiones</div>
+                        </div>
+                        <div class="stat-card" style="background:#9C27B0">
+                            <div class="stat-valor">${r.descalificacion || 0}</div>
+                            <div class="stat-label">Descalificaciones</div>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sancionado</th>
+                                <th>Tipo</th>
+                                <th class="text-center">Advertencias</th>
+                                <th class="text-center">Penalties</th>
+                                <th class="text-center">Expulsiones</th>
+                                <th class="text-center">Descalif.</th>
+                                <th class="text-center">Puntos Sancion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.data.sancionados.forEach(s => {
+                    html += `
+                        <tr>
+                            <td>
+                                <strong>${s.nombre || 'Sin nombre'}</strong>
+                                ${s.dorsal ? `<small style="color:#999">#${s.dorsal}</small>` : ''}
+                            </td>
+                            <td>${s.tipo_persona}</td>
+                            <td class="text-center">${s.totales.advertencias || 0}</td>
+                            <td class="text-center">${s.totales.penalties || 0}</td>
+                            <td class="text-center" style="${s.totales.expulsiones > 0 ? 'color:#f44336; font-weight:bold' : ''}">${s.totales.expulsiones || 0}</td>
+                            <td class="text-center" style="${s.totales.descalificaciones > 0 ? 'color:#9C27B0; font-weight:bold' : ''}">${s.totales.descalificaciones || 0}</td>
+                            <td class="text-center"><strong>${s.puntos_sancion}</strong></td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos</div>';
+            }
+        }
+
+        // 5. CARGAR RESUMEN DE JORNADA
+        async function cargarResumenJornada(idjornada) {
+            const container = document.getElementById('contenido-jornada');
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/jornada/${idjornada}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.resultados?.length === 0) {
+                    container.innerHTML = '<div class="mensaje-vacio">No hay partidos para esta jornada</div>';
+                    return;
+                }
+
+                const e = data.data.estadisticas;
+
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-valor">${e.total_partidos}</div>
+                            <div class="stat-label">Total Partidos</div>
+                        </div>
+                        <div class="stat-card verde">
+                            <div class="stat-valor">${e.finalizados}</div>
+                            <div class="stat-label">Finalizados</div>
+                        </div>
+                        <div class="stat-card azul">
+                            <div class="stat-valor">${e.victorias_locales}</div>
+                            <div class="stat-label">Victorias Locales</div>
+                        </div>
+                        <div class="stat-card naranja">
+                            <div class="stat-valor">${e.victorias_visitantes}</div>
+                            <div class="stat-label">Victorias Visitantes</div>
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Partido</th>
+                                <th>Local</th>
+                                <th class="text-center">Resultado</th>
+                                <th>Visitante</th>
+                                <th class="text-center">Sets</th>
+                                <th class="text-center">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.data.resultados.forEach(r => {
+                    const estadoBadge = r.estado === 'finalizado'
+                        ? '<span class="badge badge-victoria">Finalizado</span>'
+                        : r.estado === 'en_curso'
+                            ? '<span class="badge badge-advertencia">En Curso</span>'
+                            : '<span class="badge badge-derrota">Pendiente</span>';
+
+                    html += `
+                        <tr>
+                            <td>${r.numero_partido || `#${r.idpartido}`}</td>
+                            <td style="${r.ganador === 'local' ? 'font-weight:bold' : ''}">
+                                ${r.local.nombre}
+                                ${r.ganador === 'local' ? '<span class="badge badge-victoria" style="margin-left:5px">G</span>' : ''}
+                            </td>
+                            <td class="text-center"><strong>${r.resultado}</strong></td>
+                            <td style="${r.ganador === 'visitante' ? 'font-weight:bold' : ''}">
+                                ${r.visitante.nombre}
+                                ${r.ganador === 'visitante' ? '<span class="badge badge-victoria" style="margin-left:5px">G</span>' : ''}
+                            </td>
+                            <td class="text-center"><small>${r.sets_detalle || '-'}</small></td>
+                            <td class="text-center">${estadoBadge}</td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos</div>';
+            }
+        }
+
+        // 6. CARGAR COMPARATIVA
+        async function cargarComparativa() {
+            const container = document.getElementById('contenido-comparativa');
+            const idequipo1 = document.getElementById('inputEquipo1').value;
+            const idequipo2 = document.getElementById('inputEquipo2').value;
+
+            if (!idequipo1 || !idequipo2) {
+                container.innerHTML = '<div class="mensaje-vacio">Ingrese los IDs de ambos equipos</div>';
+                return;
+            }
+
+            container.innerHTML = '<div class="loading">Cargando datos...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/comparativa/${idequipo1}/${idequipo2}`);
+                const data = await response.json();
+
+                if (!data.success || data.data.mensaje) {
+                    container.innerHTML = `<div class="mensaje-vacio">${data.data.mensaje || 'No se encontraron enfrentamientos'}</div>`;
+                    return;
+                }
+
+                const c = data.data;
+
+                let html = `
+                    <div style="display: flex; justify-content: space-around; align-items: center; padding: 20px; background: #f5f5f5; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="text-align: center;">
+                            <h2 style="margin: 0">${c.equipo1.nombre || 'Equipo 1'}</h2>
+                            <div style="font-size: 48px; font-weight: bold; color: #4CAF50">${c.resumen.victorias_equipo1}</div>
+                            <p style="color: #666">Victorias</p>
+                        </div>
+                        <div style="text-align: center; font-size: 24px; color: #999">VS</div>
+                        <div style="text-align: center;">
+                            <h2 style="margin: 0">${c.equipo2.nombre || 'Equipo 2'}</h2>
+                            <div style="font-size: 48px; font-weight: bold; color: #2196F3">${c.resumen.victorias_equipo2}</div>
+                            <p style="color: #666">Victorias</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-valor">${c.resumen.total_enfrentamientos}</div>
+                            <div class="stat-label">Enfrentamientos</div>
+                        </div>
+                        <div class="stat-card verde">
+                            <div class="stat-valor">${c.resumen.sets_equipo1} - ${c.resumen.sets_equipo2}</div>
+                            <div class="stat-label">Sets Totales</div>
+                        </div>
+                        <div class="stat-card azul">
+                            <div class="stat-valor">${c.resumen.puntos_equipo1} - ${c.resumen.puntos_equipo2}</div>
+                            <div class="stat-label">Puntos Totales</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 20px 0 10px">Historial de Enfrentamientos</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th class="text-center">${c.equipo1.nombre}</th>
+                                <th class="text-center">Resultado</th>
+                                <th class="text-center">${c.equipo2.nombre}</th>
+                                <th>Detalle Sets</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                c.enfrentamientos.forEach(e => {
+                    const fecha = e.fecha ? new Date(e.fecha).toLocaleDateString() : '-';
+                    const gano1 = e.resultado.ganador === parseInt(idequipo1);
+
+                    html += `
+                        <tr>
+                            <td>${fecha}</td>
+                            <td class="text-center" style="${gano1 ? 'font-weight:bold; color:#4CAF50' : ''}">${e.resultado.equipo1_sets}</td>
+                            <td class="text-center"><strong>${e.resultado.equipo1_sets} - ${e.resultado.equipo2_sets}</strong></td>
+                            <td class="text-center" style="${!gano1 ? 'font-weight:bold; color:#2196F3' : ''}">${e.resultado.equipo2_sets}</td>
+                            <td>
+                                ${e.sets_detalle.map(s => `<small>${s.equipo1}-${s.equipo2}</small>`).join(', ')}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div class="mensaje-vacio" style="color:#f44336">Error al cargar los datos</div>';
+            }
+        }
+
+        // Cargar datos iniciales
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarGoleadores(obtenerFiltros());
+        });
+    </script>
+</body>
+</html>

@@ -59,3 +59,6 @@ npx sequelize-cli migration:generate --name rename-tablaposicions-to-tablaposici
 
 
 npx sequelize-cli db:seed:all
+
+
+npx sequelize-cli db:migrate

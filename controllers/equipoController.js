@@ -200,6 +200,48 @@ const eliminarEquipo = async (req, res) => {
     }
 };
 
+// Obtener jugadores de un equipo específico (con filtro opcional por gestión)
+const obtenerJugadoresDeEquipo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { id_gestion } = req.query; // Parámetro opcional para filtrar por gestión
+        const jugadores = await EquipoService.obtenerJugadoresDeEquipo(id, id_gestion ? parseInt(id_gestion) : null);
+        res.status(200).json({
+            success: true,
+            message: 'Jugadores del equipo obtenidos exitosamente',
+            data: jugadores,
+            total: jugadores.length
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            data: []
+        });
+    }
+};
+
+// Obtener plantilla habilitada (participaciones) de un equipo
+const obtenerPlantillaHabilitada = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { id_campeonato } = req.query; // Parámetro opcional para filtrar por campeonato
+        const plantilla = await EquipoService.obtenerPlantillaHabilitada(id, id_campeonato ? parseInt(id_campeonato) : null);
+        res.status(200).json({
+            success: true,
+            message: 'Plantilla habilitada obtenida exitosamente',
+            data: plantilla,
+            total: plantilla.length
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message,
+            data: []
+        });
+    }
+};
+
 module.exports = {
     crearEquipo,
     obtenerEquipos,
@@ -211,5 +253,7 @@ module.exports = {
     obtenerEquiposPorClubYCategoria,
     obtenerEquipoConRelaciones,
     actualizarEquipo,
-    eliminarEquipo
+    eliminarEquipo,
+    obtenerJugadoresDeEquipo,
+    obtenerPlantillaHabilitada
 };

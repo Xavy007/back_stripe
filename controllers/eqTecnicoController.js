@@ -133,22 +133,28 @@ const obtenerResumenEqTecnico = async (req, res) => {
 const actualizarEqTecnico = async (req, res) => {
   try {
     const { id } = req.params;
-    const tecnicoActualizado = await eqTecnicoService.actualizarEqTecnico(id, req.body);
- console.log(tecnicoActualizado);
-    if (!tecnicoActualizado) {
+    const datos = req.body;
+
+    console.log('📝 Actualizando EqTecnico ID:', id);
+    console.log('Datos recibidos:', datos);
+
+    const tecnico = await eqTecnicoService.actualizarEqTecnico(id, datos);
+
+    if (!tecnico) {
       return res.status(404).json({
         success: false,
         message: 'Miembro del cuerpo técnico no encontrado'
       });
     }
 
-    return res.json({
+    return res.status(200).json({
       success: true,
-      message: 'Miembro del cuerpo técnico actualizado correctamente',
-      data: tecnicoActualizado
+      message: 'Miembro del cuerpo técnico actualizado exitosamente',
+      data: tecnico
     });
+
   } catch (error) {
-    console.error('EqTecnicoController actualizar error:', error);
+    console.error('❌ Error en actualizarEqTecnico:', error);
     return res.status(400).json({
       success: false,
       message: 'Error al actualizar el cuerpo técnico: ' + error.message

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const autenticar = require('../middleware/authMiddleware');
 const autorizar = require('../middleware/roleMiddleware');
-const CampeonatoController = require('../controllers/campeoantoController');
+const CampeonatoController = require('../controllers/campeonatoController');
 
 // CRUD Routes
 router.post('/', CampeonatoController.crearCampeonato);                                    // POST /api/campeonato
