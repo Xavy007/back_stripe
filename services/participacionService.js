@@ -30,14 +30,6 @@ const crearParticipacion = async (data) => {
         throw new Error('El dorsal debe estar entre 1 y 99');
     }
 
-    // Validar posición si se proporciona
-    if (data.posicion) {
-        const posicionesValidas = ['Armador', 'Opuesto', 'Central', 'Libero', 'Punta', 'Entrenador', 'Otro'];
-        if (!posicionesValidas.includes(data.posicion)) {
-            throw new Error('La posición debe ser válida: Armador, Opuesto, Central, Libero, Punta, Entrenador u Otro');
-        }
-    }
-
     try {
         // Crear objeto solo con los campos que existen en la tabla
         const nuevaParticipacion = await ParticipacionRepository.crearParticipacion({
@@ -46,7 +38,7 @@ const crearParticipacion = async (data) => {
             id_campeonato: parseInt(data.id_campeonato),
             id_categoria: parseInt(data.id_categoria),
             dorsal: dorsalNum,
-            posicion: data.posicion || null,
+            posicion: ['Armador', 'Opuesto', 'Central', 'Libero', 'Punta', 'Entrenador', 'Otro'].includes(data.posicion) ? data.posicion : null,
             estado: data.estado || 'activo',
             fecha_inscripcion: data.fecha_inscripcion || new Date(),
             cantidad_partidos: data.cantidad_partidos || 0,
@@ -206,12 +198,10 @@ const actualizarParticipacion = async (id_participacion, data) => {
         }
     }
 
-    // Validar posición si se proporciona
-    if (data.posicion) {
+    // Normalizar posicion: si no es un valor válido, guardarlo como null
+    if (data.posicion !== undefined) {
         const posicionesValidas = ['Armador', 'Opuesto', 'Central', 'Libero', 'Punta', 'Entrenador', 'Otro'];
-        if (!posicionesValidas.includes(data.posicion)) {
-            throw new Error('La posición debe ser válida');
-        }
+        data.posicion = posicionesValidas.includes(data.posicion) ? data.posicion : null;
     }
 
     // Validar estado si se proporciona

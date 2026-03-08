@@ -199,11 +199,11 @@ module.exports = (io) => {
           }
         });
 
-        // Opcional: Eliminar partido después de un tiempo
+        // Eliminar partido de memoria después de 5 minutos
         setTimeout(() => {
           partidosActivos.delete(fullMatchId);
           console.log(`🗑️ Partido eliminado de memoria: ${fullMatchId}`);
-        }, 60000 * 30); // 30 minutos
+        }, 60000 * 5); // 5 minutos
 
       } catch (error) {
         console.error('❌ Error finalizando partido:', error);
@@ -215,7 +215,9 @@ module.exports = (io) => {
      */
     socket.on('get-matches', () => {
       try {
-        const partidos = Array.from(partidosActivos.values()).map(p => ({
+        const partidos = Array.from(partidosActivos.values())
+          .filter(p => p.estado !== 'finalizado')
+          .map(p => ({
           matchId: p.matchId,
           // Campos esperados por el frontend
           teamA: p.teamA || p.equipoLocal || '',

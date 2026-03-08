@@ -453,6 +453,136 @@ class PartidoDigitalService {
         console.log('⚠️ No hay historial de eventos para guardar');
       }
 
+      // ✅ Guardar estadísticas de jugadores y equipos
+      try {
+        const EstadisticasJugador = require('../../models/mongodb/EstadisticasJugadoresPartido');
+        const EstadisticasEquipo = require('../../models/mongodb/EstadisticasEquiposPartido');
+
+        // Limpiar estadísticas anteriores del partido
+        await EstadisticasJugador.deleteMany({ idpartido });
+        await EstadisticasEquipo.deleteMany({ idpartido });
+
+        // Solo eventos de puntos (excluir set_end y substitution)
+        const eventosPunto = (historial || []).filter(e =>
+          e.type !== 'substitution' && e.type !== 'set_end'
+        );
+
+        // ── ESTADÍSTICAS POR JUGADOR ─────────────────────────────────
+        const statsJugadores = {};
+        for (const evento of eventosPunto) {
+          if (!evento.playerNumber) continue;
+
+          const equipoStr = evento.team === 'A' ? 'local' : 'visitante';
+          const clave = `${equipoStr}__${evento.playerNumber}`;
+
+          if (!statsJugadores[clave]) {
+            const plantel = evento.team === 'A' ? (jugadoresLocal || []) : (jugadoresVisitante || []);
+            const jugadorData = plantel.find(j =>
+              String(j.dorsal) === String(evento.playerNumber) || j.nombre === evento.playerName
+            );
+            statsJugadores[clave] = {
+              idpartido,
+              equipo: equipoStr,
+              idjugador: jugadorData?.id_jugador || 0,
+              dorsal: parseInt(evento.playerNumber) || 0,
+              nombre_completo: evento.playerName || '',
+              puntos_anotados: 0,
+              puntos_por_concepto: { ataque: 0, bloqueo: 0, saque: 0 },
+              saque: { intentos: 0, aces: 0, errores: 0, efectividad: 0, puntos_directos: 0 },
+              ataque: { intentos: 0, exitosos: 0, bloqueados: 0, errores: 0, efectividad: 0 },
+              bloqueo: { solos: 0, asistidos: 0, total_puntos: 0, toques: 0, errores: 0 }
+            };
+          }
+
+          statsJugadores[clave].puntos_anotados++;
+          if (evento.type === 'ataque') {
+            statsJugadores[clave].puntos_por_concepto.ataque++;
+            statsJugadores[clave].ataque.exitosos++;
+            statsJugadores[clave].ataque.intentos++;
+          } else if (evento.type === 'saque') {
+            statsJugadores[clave].puntos_por_concepto.saque++;
+            statsJugadores[clave].saque.aces++;
+            statsJugadores[clave].saque.intentos++;
+            statsJugadores[clave].saque.puntos_directos++;
+          } else if (evento.type === 'bloqueo') {
+            statsJugadores[clave].puntos_por_concepto.bloqueo++;
+            statsJugadores[clave].bloqueo.solos++;
+            statsJugadores[clave].bloqueo.total_puntos++;
+          }
+        }
+
+        for (const stats of Object.values(statsJugadores)) {
+          if (stats.ataque.intentos > 0) {
+            stats.ataque.efectividad = parseFloat(((stats.ataque.exitosos / stats.ataque.intentos) * 100).toFixed(2));
+          }
+          if (stats.saque.intentos > 0) {
+            stats.saque.efectividad = parseFloat(((stats.saque.aces / stats.saque.intentos) * 100).toFixed(2));
+          }
+          await EstadisticasJugador.create(stats);
+        }
+        console.log(`✅ Estadísticas de ${Object.keys(statsJugadores).length} jugadores guardadas`);
+
+        // ── ESTADÍSTICAS POR EQUIPO ──────────────────────────────────
+        const equiposStats = [
+          { equipoStr: 'local',     team: 'A', idequipo: equipoLocal.id,     nombre: equipoLocal.nombre,     setsG: setsLocal,     setsP: setsVisitante, puntosT: puntosTotalesLocal,  puntosRival: puntosTotalesVisitante },
+          { equipoStr: 'visitante', team: 'B', idequipo: equipoVisitante.id, nombre: equipoVisitante.nombre, setsG: setsVisitante, setsP: setsLocal,     puntosT: puntosTotalesVisitante, puntosRival: puntosTotalesLocal }
+        ];
+
+        for (const eq of equiposStats) {
+          const eventosEq = eventosPunto.filter(e => e.team === eq.team);
+          const puntosAtaque  = eventosEq.filter(e => e.type === 'ataque').length;
+          const puntosSaque   = eventosEq.filter(e => e.type === 'saque').length;
+          const puntosBloqueo = eventosEq.filter(e => e.type === 'bloqueo').length;
+          const total         = eventosEq.length;
+
+          const porSet = (sets || []).map((set, i) => ({
+            numero_set: i + 1,
+            puntos:  eq.team === 'A' ? (set.scoreA || 0) : (set.scoreB || 0),
+            ganado:  eq.team === 'A' ? (set.scoreA > set.scoreB) : (set.scoreB > set.scoreA),
+            aces:    eventosEq.filter(e => e.setNumber === i + 1 && e.type === 'saque').length,
+            bloqueos:eventosEq.filter(e => e.setNumber === i + 1 && e.type === 'bloqueo').length,
+            errores: 0
+          }));
+
+          await EstadisticasEquipo.create({
+            idpartido,
+            equipo:       eq.equipoStr,
+            idequipo:     eq.idequipo,
+            nombre_equipo:eq.nombre,
+            generales: {
+              puntos_totales:    eq.puntosT,
+              sets_ganados:      eq.setsG,
+              sets_perdidos:     eq.setsP,
+              diferencia_puntos: eq.puntosT - eq.puntosRival
+            },
+            por_set: porSet,
+            ataque: {
+              total_intentos: puntosAtaque,
+              exitosos:       puntosAtaque,
+              bloqueados:     0,
+              errores:        0,
+              efectividad:    total > 0 ? parseFloat(((puntosAtaque / total) * 100).toFixed(2)) : 0,
+              puntos_ataque:  puntosAtaque
+            },
+            saque: {
+              total_saques: puntosSaque,
+              aces:         puntosSaque,
+              errores:      0,
+              efectividad:  puntosSaque > 0 ? 100 : 0
+            },
+            bloqueo: {
+              exitosos:      puntosBloqueo,
+              toques:        puntosBloqueo,
+              errores:       0,
+              puntos_bloqueo:puntosBloqueo
+            }
+          });
+        }
+        console.log('✅ Estadísticas de equipos guardadas');
+      } catch (statsError) {
+        console.error('⚠️ Error guardando estadísticas (no crítico):', statsError.message);
+      }
+
       // Sincronizar con PostgreSQL
       console.log('🔄 Sincronizando con PostgreSQL...');
       await this.sincronizarConPostgreSQL(idpartido);
