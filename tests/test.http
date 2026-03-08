@@ -1,3 +1,8 @@
+# Variables — pega aqui el token que devuelve POST /api/auth/login
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+###
+
 ### Obtener Usuarios
 GET http://localhost:8080/api/gestion
 Accept: application/json
@@ -43,25 +48,26 @@ GET http://localhost:8080/nacionalidad/getbyId/5
 Accept: application/json
 
 
-### Test ServiceA through Gateway (Round Robin Load Balancing)
-POST http://localhost:8080/api/persona/registro
+### Crear Persona + Usuario (transaccion atomica)
+POST http://localhost:8080/api/usuario/
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
   "persona": {
     "nombre": "Javier",
-    "ci":"71506101",
-    "genero":"masculino",
-    "fnac":"1993-07-10",
+    "ci": "71506101",
+    "genero": "masculino",
+    "fnac": "10/07/1993",
     "ap": "Alcoba",
-    "am":"Gutierrez",
+    "am": "Gutierrez",
     "id_nacionalidad": 1
   },
   "usuario": {
     "email": "javier@dotset.com",
-    "password": "secreta12345",
-    "rol":"admin"
+    "password": "Secreta12345",
+    "rol": "admin"
   }
 }
 
