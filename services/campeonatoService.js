@@ -49,6 +49,8 @@ const CAMPEONATO_TIPOS = ['campeonato', 'liga', 'copa', 'relampago', 'amistoso',
  * Reflejan el campo ENUM `c_estado` de la tabla Campeonatos.
  * La transición típica es: programado → en_curso → finalizado.
  * @constant {string[]}
+ * 
+ * 
  */
 const C_ESTADOS = ['programado', 'en_curso', 'finalizado', 'suspendido', 'cancelado'];
 

@@ -10,6 +10,7 @@
  * Middlewares aplicados globalmente:
  *   - express.json / urlencoded con límite 50 MB (soporte para imágenes en base64).
  *   - cors: configurado mediante variable de entorno CORS_ORIGIN.
+ *   - rate-limit: 100 req/15min para la API general, 20 req/15min para /auth/login.
  *   - express.static: sirve archivos subidos (/uploads) y recursos públicos (/public).
  *   - Logger de peticiones: registra método y ruta de cada request entrante.
  *
@@ -32,6 +33,18 @@
  */
 
 require('dotenv').config({ silent: true });
+
+/* ═══════════════════════════════════════════════════════════════════
+   Validación de variables de entorno obligatorias
+   El servidor no debe arrancar si faltan variables críticas.
+═══════════════════════════════════════════════════════════════════ */
+const REQUIRED_ENV = ['JWT_SECRET', 'DB_NAME', 'DB_USER', 'DB_PWD', 'MONGODB_URI'];
+const missingEnv = REQUIRED_ENV.filter(key => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error(`❌ Variables de entorno faltantes: ${missingEnv.join(', ')}`);
+  console.error('   Verifica tu archivo .env antes de iniciar el servidor.');
+  process.exit(1);
+}
 
 const express = require('express');
 const path    = require('path');
@@ -125,6 +138,33 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors()); // Responder a preflight OPTIONS en todas las rutas
 
+/* ═══════════════════════════════════════════════════════════════════
+   Rate Limiting
+   Limita las peticiones por IP para prevenir ataques DoS y abuso de la API.
+   - API general: 100 peticiones por ventana de 15 minutos.
+   - Endpoint de login: límite estricto de 20 peticiones por 15 minutos.
+═══════════════════════════════════════════════════════════════════ */
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Demasiadas peticiones. Intenta nuevamente en 15 minutos.' }
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Demasiados intentos de acceso. Intenta nuevamente en 15 minutos.' }
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/auth/login', loginLimiter);
+
 /**
  * Archivos estáticos.
  * - /uploads → imágenes y documentos subidos por usuarios (fotos, carnets, logos).
@@ -136,6 +176,19 @@ app.use('/public',  express.static(path.join(__dirname, 'public')));
 /* ═══════════════════════════════════════════════════════════════════
    Rutas protegidas de prueba / administración
 ═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * Health check — verifica que el servidor está operativo.
+ * Usado por la app móvil para detectar conectividad y por monitoreo externo.
+ */
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
+  });
+});
 
 /** Ruta de prueba de autenticación JWT. */
 app.get('/api/protegido', authMiddleware, (req, res) => {
@@ -207,12 +260,50 @@ app.use('/api/carnets',  carnetsRoutes);
 
 /* ═══════════════════════════════════════════════════════════════════
    Logger de peticiones
-   Registra cada request entrante para facilitar el debugging.
-   En producción se recomienda reemplazar por un logger dedicado (winston, morgan).
+   Registra método, ruta y código de respuesta de cada request.
+   En producción se recomienda reemplazar por morgan o winston.
 ═══════════════════════════════════════════════════════════════════ */
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  const start = Date.now();
+  res.on('finish', () => {
+    const ms = Date.now() - start;
+    const color = res.statusCode >= 500 ? '\x1b[31m'  // rojo
+                : res.statusCode >= 400 ? '\x1b[33m'  // amarillo
+                : '\x1b[32m';                          // verde
+    console.log(`${color}${req.method}\x1b[0m ${req.path} → ${res.statusCode} (${ms}ms)`);
+  });
   next();
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   Ruta no encontrada (404)
+═══════════════════════════════════════════════════════════════════ */
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Ruta no encontrada: ${req.method} ${req.originalUrl}`
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   Middleware global de errores
+   Captura cualquier error no manejado en controladores o servicios.
+   Debe ser el ÚLTIMO middleware registrado.
+═══════════════════════════════════════════════════════════════════ */
+app.use((err, req, res, next) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || 'Error interno del servidor';
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(`❌ [${status}] ${req.method} ${req.path} →`, message);
+    if (err.stack) console.error(err.stack);
+  }
+
+  res.status(status).json({
+    success: false,
+    message,
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+  });
 });
 
 module.exports = app;
