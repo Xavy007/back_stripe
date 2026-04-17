@@ -63,7 +63,7 @@ const obtenerJugadores = async (filtros = {}) => {
                 },
                 {
                     model: Club,
-                    attributes: ['id_club', 'nombre'],
+                    attributes: ['id_club', 'nombre', 'logo'],
                     required: false
                 },
                 // ✅ CARNET AGREGADO
@@ -145,7 +145,7 @@ const obtenerTodosLosJugadores = async () => {
                 },
                 {
                     model: Club,
-                    attributes: ['id_club', 'nombre'],
+                    attributes: ['id_club', 'nombre', 'logo'],
                     required: false
                 },
                 {

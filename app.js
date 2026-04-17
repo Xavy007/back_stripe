@@ -102,8 +102,9 @@ const clubroutes       = require('./routes/clubes.routes');
 const clubUsuarioRoutes= require('./routes/clubUsuario.routes');
 
 // ── Infraestructura ──
-const canchasroutes = require('./routes/cancha.routes');
-const carnetsRoutes = require('./routes/carnet.routes');
+const canchasroutes    = require('./routes/cancha.routes');
+const carnetsRoutes    = require('./routes/carnet.routes');
+const asociacionRoutes = require('./routes/asociacion.routes');
 
 // ── MongoDB: planillas y reportes ──
 const planillaDigitalRoutes = require('./routes/mongodb/planillaDigital.routes');
@@ -255,8 +256,9 @@ app.use('/api/club',       clubroutes);
 app.use('/api/clubusuario',clubUsuarioRoutes);
 
 // ── Infraestructura ──
-app.use('/api/cancha',   canchasroutes);
-app.use('/api/carnets',  carnetsRoutes);
+app.use('/api/cancha',      canchasroutes);
+app.use('/api/carnets',     carnetsRoutes);
+app.use('/api/asociacion',  asociacionRoutes);
 
 /* ═══════════════════════════════════════════════════════════════════
    Logger de peticiones
