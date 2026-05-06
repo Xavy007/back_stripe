@@ -267,7 +267,9 @@ module.exports = {
       {
         id_club: byAcronimo['CTV'],
         id_usuario: byEmail['presidenteclub@dotset.bo'],
-        createdAt: now, updatedAt: now
+        rol_en_club: 'presidenteclub',
+        activo: true,
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
@@ -319,6 +321,7 @@ module.exports = {
         grado: 'departamental',
         certificacion: true,
         estado_juez: 'activo',
+        fecha_inicio: now,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       }
@@ -332,6 +335,8 @@ module.exports = {
         id_persona: byCI['9123456'],
         id_club: byAcronimo['CTV'],
         rol: 'DT',
+        estado_eq: 'activo',
+        fecha_inicio: now,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       }
