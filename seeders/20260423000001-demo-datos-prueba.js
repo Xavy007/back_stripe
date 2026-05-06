@@ -209,7 +209,7 @@ module.exports = {
     // =========================================================================
     // 3. CLUBS
     // =========================================================================
-    await queryInterface.bulkInsert('Clubs', [
+    await queryInterface.bulkInsert('Clubes', [
       {
         nombre: 'Club Sucre Voleibol',
         acronimo: 'CSV',
@@ -233,7 +233,7 @@ module.exports = {
     ], {});
 
     const [clubs] = await queryInterface.sequelize.query(
-      `SELECT id_club, acronimo FROM "Clubs" WHERE acronimo IN ('CSV','CSC')`
+      `SELECT id_club, acronimo FROM "Clubes" WHERE acronimo IN ('CSV','CSC')`
     );
     const byAcronimo = {};
     clubs.forEach(c => { byAcronimo[c.acronimo] = c.id_club; });
@@ -257,7 +257,7 @@ module.exports = {
     // =========================================================================
     // 4. JUGADORES
     // =========================================================================
-    await queryInterface.bulkInsert('Jugadors', [
+    await queryInterface.bulkInsert('Jugadores', [
       {
         id_persona: byCI['6789012'],
         id_club: byAcronimo['CSV'],
@@ -299,7 +299,7 @@ module.exports = {
     // =========================================================================
     // 5. JUEZ
     // =========================================================================
-    await queryInterface.bulkInsert('Juezs', [
+    await queryInterface.bulkInsert('Jueces', [
       {
         id_persona: byCI['5678901'],
         juez_categoria: 'juez',
@@ -361,10 +361,10 @@ module.exports = {
     // Eliminar en orden inverso para respetar FK
     await queryInterface.bulkDelete('Canchas',       { nombre: { [Sequelize.Op.in]: ['Coliseo Universitario', 'Cancha Municipal'] } }, {});
     await queryInterface.bulkDelete('EqTecnicos',    {}, {});
-    await queryInterface.bulkDelete('Juezs',         {}, {});
-    await queryInterface.bulkDelete('Jugadors',      {}, {});
+    await queryInterface.bulkDelete('Jueces',         {}, {});
+    await queryInterface.bulkDelete('Jugadores',      {}, {});
     await queryInterface.bulkDelete('ClubUsuarios',  {}, {});
-    await queryInterface.bulkDelete('Clubs',         { acronimo: { [Sequelize.Op.in]: ['CSV', 'CSC'] } }, {});
+    await queryInterface.bulkDelete('Clubes',         { acronimo: { [Sequelize.Op.in]: ['CSV', 'CSC'] } }, {});
     await queryInterface.bulkDelete('Usuarios',      { email: { [Sequelize.Op.in]: [
       'admin@dotset.bo', 'presidente@dotset.bo', 'secretario@dotset.bo',
       'presidenteclub@dotset.bo', 'juez@dotset.bo'
