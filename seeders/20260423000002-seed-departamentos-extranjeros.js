@@ -11,6 +11,14 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
+
+    // El seeder de Bolivia inserta con id_departamento explícito (1-9), lo que no
+    // avanza la secuencia de PostgreSQL. Este setval la sincroniza antes de insertar.
+    await queryInterface.sequelize.query(
+      `SELECT setval(pg_get_serial_sequence('"Departamentos"', 'id_departamento'),
+              (SELECT COALESCE(MAX(id_departamento), 0) FROM "Departamentos"))`
+    );
+
     const r = (nombre, id_nacionalidad) => ({ nombre, id_nacionalidad, createdAt: now, updatedAt: now });
 
     await queryInterface.bulkInsert('Departamentos', [
