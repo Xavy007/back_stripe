@@ -278,36 +278,32 @@ module.exports = {
       {
         id_persona: byCI['6789012'],
         id_club: byAcronimo['CTV'],
-        posicion: 'central',
-        numero_camiseta: 3,
-        habilitado: true,
+        dorsal: 3,
+        estatura: 1.75,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['7890123'],
         id_club: byAcronimo['CTV'],
-        posicion: 'libero',
-        numero_camiseta: 11,
-        habilitado: true,
+        dorsal: 11,
+        estatura: 1.68,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['8901234'],
         id_club: byAcronimo['CCT'],
-        posicion: 'armador',
-        numero_camiseta: 7,
-        habilitado: true,
+        dorsal: 7,
+        estatura: 1.82,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['9012345'],
         id_club: byAcronimo['CCT'],
-        posicion: 'opuesto',
-        numero_camiseta: 9,
-        habilitado: true,
+        dorsal: 9,
+        estatura: 1.79,
         estado: true,
         freg: now, createdAt: now, updatedAt: now
       }
