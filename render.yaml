@@ -13,62 +13,31 @@ services:
   # ── Backend Node.js ──────────────────────────────────────────────────────
   - type: web
     name: dotset-api
-    runtime: docker          # usa el Dockerfile del repositorio
+    runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: free               # plan gratuito (750 h/mes)
-    region: oregon           # us-west-2 — menor latencia desde Sudamérica
-
-    healthCheckPath: /health # Render usa este endpoint para saber si el servicio está vivo
+    plan: free
+    region: oregon
+    healthCheckPath: /health
 
     envVars:
       - key: NODE_ENV
         value: production
-
       - key: PORT
         value: 8080
-
-      # JWT — generar con: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+      # Las siguientes se configuran manualmente en el dashboard de Render
       - key: JWT_SECRET
-        sync: false          # se configura manualmente en el dashboard de Render
-
-      # PostgreSQL — se inyecta automáticamente desde el servicio de BD de abajo
-      - key: DB_NAME
-        fromDatabase:
-          name: dotset-db
-          property: database
-
-      - key: DB_USER
-        fromDatabase:
-          name: dotset-db
-          property: user
-
-      - key: DB_PWD
-        fromDatabase:
-          name: dotset-db
-          property: password
-
+        sync: false
       - key: DB_HOST
-        fromDatabase:
-          name: dotset-db
-          property: host
-
+        sync: false
       - key: DB_PORT
-        fromDatabase:
-          name: dotset-db
-          property: port
-
-      # MongoDB Atlas — pegar la URI desde el dashboard de Atlas
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PWD
+        sync: false
       - key: MONGODB_URI
         sync: false
-
-      # CORS — pegar la URL de Vercel una vez desplegado el frontend
       - key: CORS_ORIGIN
         sync: false
-
-  # ── PostgreSQL ───────────────────────────────────────────────────────────
-databases:
-  - name: dotset-db
-    plan: free               # gratis por 90 días, luego $7/mes
-    region: oregon
-    databaseName: dotset
-    user: dotset_user

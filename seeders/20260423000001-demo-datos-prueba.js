@@ -36,7 +36,7 @@ module.exports = {
         fnac: new Date('1985-03-15'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Presidente de asociación
       {
@@ -47,7 +47,7 @@ module.exports = {
         fnac: new Date('1978-07-22'),
         genero: 'femenino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Secretario
       {
@@ -58,7 +58,7 @@ module.exports = {
         fnac: new Date('1990-11-05'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Presidente de club
       {
@@ -69,7 +69,7 @@ module.exports = {
         fnac: new Date('1982-04-10'),
         genero: 'femenino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Juez árbitro
       {
@@ -80,7 +80,7 @@ module.exports = {
         fnac: new Date('1988-09-30'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Jugadora 1
       {
@@ -91,7 +91,7 @@ module.exports = {
         fnac: new Date('2002-01-18'),
         genero: 'femenino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Jugadora 2
       {
@@ -102,7 +102,7 @@ module.exports = {
         fnac: new Date('2001-06-25'),
         genero: 'femenino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Jugador 3
       {
@@ -113,7 +113,7 @@ module.exports = {
         fnac: new Date('2000-12-03'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Jugador 4
       {
@@ -124,7 +124,7 @@ module.exports = {
         fnac: new Date('1999-08-14'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       // Entrenador
       {
@@ -135,7 +135,7 @@ module.exports = {
         fnac: new Date('1975-02-28'),
         genero: 'masculino',
         id_nacionalidad: 1,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
