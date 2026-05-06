@@ -2,16 +2,12 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // Agregar columnas a usuarios
-    await queryInterface.addColumn('Usuarios', 'failed_attempts', {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    });
-    await queryInterface.addColumn('Usuarios', 'locked_until', {
-      type: Sequelize.DATE,
-      allowNull: true
-    });
+    // Agregar columnas a usuarios (IF NOT EXISTS evita error si ya existen)
+    await queryInterface.sequelize.query(`
+      ALTER TABLE "Usuarios"
+        ADD COLUMN IF NOT EXISTS "failed_attempts" INTEGER NOT NULL DEFAULT 0,
+        ADD COLUMN IF NOT EXISTS "locked_until" TIMESTAMP WITH TIME ZONE;
+    `);
 
     // Crear tabla sessions
     await queryInterface.createTable('sessions', {
