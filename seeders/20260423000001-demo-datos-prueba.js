@@ -18,10 +18,17 @@ module.exports = {
     const now = new Date();
     const SALT_ROUNDS = 10;
 
-    // ─── Contraseña única para todos los usuarios demo ───────────────────────
-    // Mínimo 12 caracteres (validación del modelo)
     const PASSWORD_DEMO = 'Admin123456!';
     const passwordHash = await bcrypt.hash(PASSWORD_DEMO, SALT_ROUNDS);
+
+    // Obtener id de la provincia Cercado del departamento Tarija
+    const [provResult] = await queryInterface.sequelize.query(
+      `SELECT p.id_provincia FROM "Provincias" p
+       JOIN "Departamentos" d ON p.id_departamento = d.id_departamento
+       WHERE d.nombre = 'Tarija' AND p.nombre = 'Cercado'
+       LIMIT 1`
+    );
+    const id_prov_tarija = provResult[0]?.id_provincia || null;
 
     // =========================================================================
     // 1. PERSONAS
@@ -36,6 +43,7 @@ module.exports = {
         fnac: new Date('1985-03-15'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Presidente de asociación
@@ -47,6 +55,7 @@ module.exports = {
         fnac: new Date('1978-07-22'),
         genero: 'femenino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Secretario
@@ -58,6 +67,7 @@ module.exports = {
         fnac: new Date('1990-11-05'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Presidente de club
@@ -69,6 +79,7 @@ module.exports = {
         fnac: new Date('1982-04-10'),
         genero: 'femenino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Juez árbitro
@@ -80,6 +91,7 @@ module.exports = {
         fnac: new Date('1988-09-30'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Jugadora 1
@@ -91,6 +103,7 @@ module.exports = {
         fnac: new Date('2002-01-18'),
         genero: 'femenino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Jugadora 2
@@ -102,6 +115,7 @@ module.exports = {
         fnac: new Date('2001-06-25'),
         genero: 'femenino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Jugador 3
@@ -113,6 +127,7 @@ module.exports = {
         fnac: new Date('2000-12-03'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Jugador 4
@@ -124,6 +139,7 @@ module.exports = {
         fnac: new Date('1999-08-14'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       },
       // Entrenador
@@ -135,6 +151,7 @@ module.exports = {
         fnac: new Date('1975-02-28'),
         genero: 'masculino',
         id_nacionalidad: 1,
+        id_provincia_origen: id_prov_tarija,
         freg: now, createdAt: now, updatedAt: now
       }
     ], {});
@@ -156,7 +173,7 @@ module.exports = {
     await queryInterface.bulkInsert('Usuarios', [
       {
         email: 'admin@dotset.bo',
-        password: passwordHash,       // ← hash generado arriba con bcrypt
+        password: passwordHash,
         rol: 'admin',
         verificado: true,
         estado: true,
@@ -207,38 +224,38 @@ module.exports = {
     ], {});
 
     // =========================================================================
-    // 3. CLUBS
+    // 3. CLUBS (ambos de Tarija)
     // =========================================================================
     await queryInterface.bulkInsert('Clubes', [
       {
-        nombre: 'Club Sucre Voleibol',
-        acronimo: 'CSV',
-        direccion: 'Av. Venezuela Nº 123, Sucre',
+        nombre: 'Club Tarija Voleibol',
+        acronimo: 'CTV',
+        direccion: 'Av. Víctor Paz Estenssoro Nº 123, Tarija',
         telefono: '46451234',
-        email: 'csv@voleibol.bo',
+        email: 'ctv@voleibol.bo',
         personeria: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       {
-        nombre: 'Club San Cristóbal',
-        acronimo: 'CSC',
-        direccion: 'Calle Loa Nº 456, Sucre',
+        nombre: 'Club Cercado Tarija',
+        acronimo: 'CCT',
+        direccion: 'Calle Colón Nº 456, Tarija',
         telefono: '46452345',
-        email: 'csc@voleibol.bo',
+        email: 'cct@voleibol.bo',
         personeria: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
     const [clubs] = await queryInterface.sequelize.query(
-      `SELECT id_club, acronimo FROM "Clubes" WHERE acronimo IN ('CSV','CSC')`
+      `SELECT id_club, acronimo FROM "Clubes" WHERE acronimo IN ('CTV','CCT')`
     );
     const byAcronimo = {};
     clubs.forEach(c => { byAcronimo[c.acronimo] = c.id_club; });
 
-    // Asociar presidente de club al Club CSV
+    // Asociar presidente de club al Club CTV
     const [usuarios] = await queryInterface.sequelize.query(
       `SELECT id_usuario, email FROM "Usuarios"
        WHERE email IN ('presidenteclub@dotset.bo','juez@dotset.bo')`
@@ -248,7 +265,7 @@ module.exports = {
 
     await queryInterface.bulkInsert('ClubUsuarios', [
       {
-        id_club: byAcronimo['CSV'],
+        id_club: byAcronimo['CTV'],
         id_usuario: byEmail['presidenteclub@dotset.bo'],
         createdAt: now, updatedAt: now
       }
@@ -260,39 +277,39 @@ module.exports = {
     await queryInterface.bulkInsert('Jugadores', [
       {
         id_persona: byCI['6789012'],
-        id_club: byAcronimo['CSV'],
+        id_club: byAcronimo['CTV'],
         posicion: 'central',
         numero_camiseta: 3,
         habilitado: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['7890123'],
-        id_club: byAcronimo['CSV'],
+        id_club: byAcronimo['CTV'],
         posicion: 'libero',
         numero_camiseta: 11,
         habilitado: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['8901234'],
-        id_club: byAcronimo['CSC'],
+        id_club: byAcronimo['CCT'],
         posicion: 'armador',
         numero_camiseta: 7,
         habilitado: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       {
         id_persona: byCI['9012345'],
-        id_club: byAcronimo['CSC'],
+        id_club: byAcronimo['CCT'],
         posicion: 'opuesto',
         numero_camiseta: 9,
         habilitado: true,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
@@ -307,7 +324,7 @@ module.exports = {
         certificacion: true,
         estado_juez: 'activo',
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
@@ -317,32 +334,32 @@ module.exports = {
     await queryInterface.bulkInsert('EqTecnicos', [
       {
         id_persona: byCI['9123456'],
-        id_club: byAcronimo['CSV'],
+        id_club: byAcronimo['CTV'],
         rol: 'DT',
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
     // =========================================================================
-    // 7. CANCHA
+    // 7. CANCHAS (Tarija)
     // =========================================================================
     await queryInterface.bulkInsert('Canchas', [
       {
-        nombre: 'Coliseo Universitario',
+        nombre: 'Coliseo Beni Yolanda',
         tipo: 'coliseo',
-        direccion: 'Campus Universitario, Sucre',
+        direccion: 'Av. Las Américas Nº 500, Tarija',
         capacidad: 500,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       },
       {
-        nombre: 'Cancha Municipal',
+        nombre: 'Cancha Municipal Tarija',
         tipo: 'abierta',
-        direccion: 'Parque Bolívar, Sucre',
+        direccion: 'Parque Bolívar, Tarija',
         capacidad: 200,
         estado: true,
-        createdAt: now, updatedAt: now
+        freg: now, createdAt: now, updatedAt: now
       }
     ], {});
 
@@ -359,12 +376,12 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     // Eliminar en orden inverso para respetar FK
-    await queryInterface.bulkDelete('Canchas',       { nombre: { [Sequelize.Op.in]: ['Coliseo Universitario', 'Cancha Municipal'] } }, {});
-    await queryInterface.bulkDelete('EqTecnicos',    {}, {});
-    await queryInterface.bulkDelete('Jueces',         {}, {});
-    await queryInterface.bulkDelete('Jugadores',      {}, {});
+    await queryInterface.bulkDelete('Canchas',      { nombre: { [Sequelize.Op.in]: ['Coliseo Beni Yolanda', 'Cancha Municipal Tarija'] } }, {});
+    await queryInterface.bulkDelete('EqTecnicos',   {}, {});
+    await queryInterface.bulkDelete('Jueces',        {}, {});
+    await queryInterface.bulkDelete('Jugadores',     {}, {});
     await queryInterface.bulkDelete('ClubUsuarios',  {}, {});
-    await queryInterface.bulkDelete('Clubes',         { acronimo: { [Sequelize.Op.in]: ['CSV', 'CSC'] } }, {});
+    await queryInterface.bulkDelete('Clubes',        { acronimo: { [Sequelize.Op.in]: ['CTV', 'CCT'] } }, {});
     await queryInterface.bulkDelete('Usuarios',      { email: { [Sequelize.Op.in]: [
       'admin@dotset.bo', 'presidente@dotset.bo', 'secretario@dotset.bo',
       'presidenteclub@dotset.bo', 'juez@dotset.bo'
