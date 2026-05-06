@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const {
   Partido,
   Equipo,
@@ -11,6 +12,47 @@ const {
   Campeonato,
   CampeonatoCategoria
 } = require('../models');
+
+const MATCH_DURATION_MS = 2 * 60 * 60 * 1000; // 2 horas
+
+/**
+ * Verifica si ya hay un partido activo en la misma cancha que se solaparía
+ * con la fecha/hora dada. Lanza error si hay cruce.
+ * @param {number} id_cancha
+ * @param {string|Date} fecha_hora  - Inicio del partido a programar
+ * @param {number} [excludeId]      - id_partido a excluir (en edición)
+ */
+const verificarCruceCancha = async (id_cancha, fecha_hora, excludeId = null) => {
+  if (!id_cancha || !fecha_hora) return;
+
+  const inicio = new Date(fecha_hora);
+  const fin    = new Date(inicio.getTime() + MATCH_DURATION_MS);
+
+  const where = {
+    id_cancha,
+    estado: true,
+    p_estado: { [Op.notIn]: ['finalizado', 'suspendido', 'wo'] },
+    // Overlapping interval: existing.start < nuevo.fin AND existing.fin > nuevo.start
+    fecha_hora: {
+      [Op.lt]: fin,
+      [Op.gt]: new Date(inicio.getTime() - MATCH_DURATION_MS)
+    }
+  };
+
+  if (excludeId) where.id_partido = { [Op.ne]: excludeId };
+
+  const conflicto = await Partido.findOne({ where });
+  if (conflicto) {
+    const fechaConflicto = new Date(conflicto.fecha_hora).toLocaleString('es-BO', {
+      dateStyle: 'short', timeStyle: 'short'
+    });
+    const err = new Error(
+      `Cruce de horario: la cancha ya tiene un partido programado el ${fechaConflicto}`
+    );
+    err.status = 409;
+    throw err;
+  }
+};
 
 // READ - por ID (con todo el detalle)
 const obtenerPartidoPorId = async (id) => {
@@ -129,5 +171,6 @@ module.exports = {
   actualizarPartido,
   eliminarPartido,
   asignarJuecesYPlanillero,
-  softDeletePartido
+  softDeletePartido,
+  verificarCruceCancha
 };

@@ -11,6 +11,12 @@ const LOCK_MINUTES = 15;
 const ACCESS_TOKEN_EXPIRES = '2h';
 const REFRESH_TOKEN_TTL_DAYS = 30;
 
+const createAccessToken = (payload) =>
+  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRES });
+
+const createRefreshTokenString = () =>
+  crypto.randomBytes(40).toString('hex');
+
 // Validación de entradas
 exports.loginValidation = [
   body('email')

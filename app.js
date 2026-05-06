@@ -104,7 +104,8 @@ const clubUsuarioRoutes= require('./routes/clubUsuario.routes');
 // ── Infraestructura ──
 const canchasroutes    = require('./routes/cancha.routes');
 const carnetsRoutes    = require('./routes/carnet.routes');
-const asociacionRoutes = require('./routes/asociacion.routes');
+const asociacionRoutes      = require('./routes/asociacion.routes');
+const asociacionCargoRoutes = require('./routes/asociacion-cargo.routes');
 
 // ── MongoDB: planillas y reportes ──
 const planillaDigitalRoutes = require('./routes/mongodb/planillaDigital.routes');
@@ -163,8 +164,10 @@ const loginLimiter = rateLimit({
   message: { success: false, message: 'Demasiados intentos de acceso. Intenta nuevamente en 15 minutos.' }
 });
 
-app.use('/api/', apiLimiter);
-app.use('/api/auth/login', loginLimiter);
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/', apiLimiter);
+  app.use('/api/auth/login', loginLimiter);
+}
 
 /**
  * Archivos estáticos.
@@ -258,7 +261,8 @@ app.use('/api/clubusuario',clubUsuarioRoutes);
 // ── Infraestructura ──
 app.use('/api/cancha',      canchasroutes);
 app.use('/api/carnets',     carnetsRoutes);
-app.use('/api/asociacion',  asociacionRoutes);
+app.use('/api/asociacion',       asociacionRoutes);
+app.use('/api/asociacion-cargo', asociacionCargoRoutes);
 
 /* ═══════════════════════════════════════════════════════════════════
    Logger de peticiones

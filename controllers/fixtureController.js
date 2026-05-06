@@ -2,6 +2,7 @@
 
 const fixtureService = require('../services/fixtureGenerador.service');
 const { Partido, Jornada, Equipo, Cancha, Juez, Club, PartidoJuez, Persona, Usuario, Fase, Grupo, Inscripcion, CampeonatoCategoria, Categoria, Campeonato } = require('../models');
+const { verificarCruceCancha } = require('../repositories/partidoRepository');
 
 class FixtureController {
   /**
@@ -139,6 +140,11 @@ class FixtureController {
         });
       }
 
+      // Verificar cruce de horario en la cancha
+      const canchaFinal   = id_cancha   ?? partido.id_cancha;
+      const fechaFinal    = fecha_hora  ?? partido.fecha_hora;
+      await verificarCruceCancha(canchaFinal, fechaFinal, parseInt(id_partido));
+
       // Actualizar datos del partido
       await partido.update({
         id_cancha,
@@ -186,11 +192,12 @@ class FixtureController {
       });
 
     } catch (error) {
-      console.error('Error actualizando partido:', error);
-      res.status(500).json({
+      const status = error.status || 500;
+      if (status !== 500) console.warn('actualizarPartido:', error.message);
+      else console.error('Error actualizando partido:', error);
+      res.status(status).json({
         success: false,
-        message: 'Error al actualizar partido',
-        error: error.message
+        message: error.message || 'Error al actualizar partido'
       });
     }
   }

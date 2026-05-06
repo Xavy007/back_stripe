@@ -8,7 +8,7 @@ const {
   eliminarPartido,
   asignarJuecesYPlanillero
 } = require('../repositories/partido.repository');
-const { softDeletePartido } = require('../repositories/partidoRepository');
+const { softDeletePartido, verificarCruceCancha } = require('../repositories/partidoRepository');
 
 const getPartidoPorId = async (id_partido) => {
   return obtenerPartidoPorId(id_partido);
@@ -19,6 +19,7 @@ const getPartidos = async (filtros) => {
 };
 
 const createPartido = async (data) => {
+  await verificarCruceCancha(data.id_cancha, data.fecha_hora);
   const transaction = await sequelize.transaction();
   try {
     const partido = await crearPartido(data, { transaction });
@@ -31,6 +32,13 @@ const createPartido = async (data) => {
 };
 
 const updatePartido = async (id_partido, data) => {
+  if (data.id_cancha || data.fecha_hora) {
+    // Resolve final values: merge incoming with existing if partial update
+    const existing = await obtenerPartidoPorId(id_partido);
+    const cancha   = data.id_cancha  ?? existing?.id_cancha;
+    const fechaHora= data.fecha_hora ?? existing?.fecha_hora;
+    await verificarCruceCancha(cancha, fechaHora, id_partido);
+  }
   const transaction = await sequelize.transaction();
   try {
     const partidoActualizado = await actualizarPartido(id_partido, data, { transaction });

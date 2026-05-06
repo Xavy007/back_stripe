@@ -19,5 +19,8 @@ RUN mkdir -p uploads
 # Puerto que expone la app (debe coincidir con PORT en .env)
 EXPOSE 8080
 
-# Comando de inicio
-CMD ["node", "server.js"]
+# Comando de inicio:
+# 1. Corre migraciones pendientes
+# 2. Corre seeders pendientes (solo los nuevos, gracias a SequelizeData)
+# 3. Levanta el servidor
+CMD ["sh", "-c", "npx sequelize-cli db:migrate --env production && npx sequelize-cli db:seed:all --env production && node server.js"]
