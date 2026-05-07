@@ -1,4 +1,4 @@
-const CarnetService = require('../services/CarnetService');
+const CarnetService = require('../services/carnetService');
 
 // CREATE - Solicitar un nuevo carnet
 const solicitarCarnet = async (req, res) => {
