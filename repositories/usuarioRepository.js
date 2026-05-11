@@ -127,6 +127,11 @@ const obtenerUsuarioPorIdPersona = async (id_persona) => {
     });
 };
 
+// READ - Obtener usuario por token de activación
+const obtenerUsuarioPorToken = async (token) => {
+    return await Usuario.findOne({ where: { token_activacion: token } });
+};
+
 // UPDATE - Actualizar usuario
 const actualizarUsuario = async (id_usuario, data) => {
     const usuario = await Usuario.findByPk(id_usuario);
@@ -181,6 +186,7 @@ module.exports = {
     obtenerUsuarioPorIdConPassword,
     obtenerUsuarioPorEmail,
     obtenerUsuarioPorEmailConPassword,
+    obtenerUsuarioPorToken,
     obtenerUsuariosPorRol,
     obtenerUsuariosVerificados,
     obtenerUsuariosBloqueados,

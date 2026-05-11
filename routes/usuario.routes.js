@@ -8,6 +8,13 @@ const usuarioController = require('../controllers/usuarioController');
 
 router.post('/login', usuarioController.login);
 
+// ACTIVAR CUENTA — público
+router.post('/activar/:token', usuarioController.activarCuenta);
+
+// RESET DE CONTRASEÑA — públicos
+router.post('/reset', usuarioController.solicitarReset);
+router.post('/reset/:token', usuarioController.resetearPassword);
+
 router.post(
     '/',
     autenticar,

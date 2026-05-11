@@ -1,12 +1,13 @@
 const UsuarioRepository = require('../repositories/usuarioRepository');
 const { Persona } = require('../models');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { enviarEmailActivacion, enviarEmailReset } = require('./emailService');
 
 const ROLES_VALIDOS = ['admin', 'presidente', 'secretario', 'presidenteclub', 'representante', 'juez'];
 const PASSWORD_MIN_LENGTH = 12;
 
 const crearUsuario = async (data) => {
- 
     if (!data.email || data.email.trim() === '') {
         throw new Error('El email es obligatorio');
     }
@@ -16,16 +17,6 @@ const crearUsuario = async (data) => {
         throw new Error('El email no es válido');
     }
 
-    // Validar contraseña
-    if (!data.password || data.password.trim() === '') {
-        throw new Error('La contraseña es obligatoria');
-    }
-
-    if (data.password.length < PASSWORD_MIN_LENGTH) {
-        throw new Error(`La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`);
-    }
-
-    // Validar rol
     if (!data.rol) {
         throw new Error('El rol es obligatorio');
     }
@@ -34,42 +25,117 @@ const crearUsuario = async (data) => {
         throw new Error(`El rol debe ser uno de: ${ROLES_VALIDOS.join(', ')}`);
     }
 
-    // Validar ID de persona
     if (!data.id_persona || !Number.isInteger(data.id_persona)) {
         throw new Error('El ID de persona es obligatorio y debe ser un número válido');
     }
 
-    // Verificar que no exista un usuario con el mismo email
     const usuarioExistente = await UsuarioRepository.obtenerUsuarioPorEmail(data.email);
     if (usuarioExistente) {
         throw new Error('Ya existe un usuario con este email');
     }
 
-    // Verificar que la persona existe
     const persona = await Persona.findByPk(data.id_persona);
     if (!persona) {
         throw new Error('La persona especificada no existe');
     }
 
-    // Verificar que no exista ya un usuario para esta persona
     const usuarioPersona = await UsuarioRepository.obtenerUsuarioPorIdPersona(data.id_persona);
     if (usuarioPersona) {
         throw new Error('Esta persona ya tiene un usuario asociado');
     }
 
+    const token = crypto.randomBytes(32).toString('hex');
+    const expira = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48 horas
+    const passwordPlaceholder = crypto.randomBytes(24).toString('hex'); // nunca se comparte
+
     try {
         const nuevoUsuario = await UsuarioRepository.crearUsuario({
-            ...data,
+            id_persona: data.id_persona,
+            email: data.email,
+            password: passwordPlaceholder,
             rol: data.rol.toLowerCase(),
-            verificado: data.verificado !== undefined ? data.verificado : true
+            verificado: false,
+            token_activacion: token,
+            token_expira: expira,
         });
-        
+
+        // Enviar email de activación (no bloqueante: si falla, el usuario igual se crea)
+        const nombre = `${persona.nombre} ${persona.ap || ''}`.trim();
+        enviarEmailActivacion({ destinatario: data.email, nombre, token }).catch((err) => {
+            console.error('⚠️ No se pudo enviar el email de activación:', err.message);
+        });
+
         return nuevoUsuario;
     } catch (error) {
         throw new Error(`Error al crear usuario: ${error.message}`);
     }
 };
 
+const activarCuenta = async (token, password) => {
+    if (!token) throw new Error('Token requerido');
+    if (!password || password.length < PASSWORD_MIN_LENGTH) {
+        throw new Error(`La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`);
+    }
+
+    const usuario = await UsuarioRepository.obtenerUsuarioPorToken(token);
+    if (!usuario) throw new Error('El enlace de activación no es válido o ya fue usado');
+    if (new Date() > new Date(usuario.token_expira)) {
+        throw new Error('El enlace de activación ha expirado. Solicita uno nuevo al administrador');
+    }
+
+    // Usar scope withPassword para poder guardar la contraseña
+    const usuarioConPass = await UsuarioRepository.obtenerUsuarioPorIdConPassword(usuario.id_usuario);
+    usuarioConPass.password = password;
+    usuarioConPass.verificado = true;
+    usuarioConPass.token_activacion = null;
+    usuarioConPass.token_expira = null;
+    await usuarioConPass.save();
+
+    return { message: 'Cuenta activada exitosamente. Ya puedes iniciar sesión.' };
+};
+
+const solicitarResetPassword = async (email) => {
+    if (!email) throw new Error('El email es obligatorio');
+
+    const usuario = await UsuarioRepository.obtenerUsuarioPorEmail(email);
+    if (!usuario || !usuario.verificado) return; // Respuesta genérica: no revelar si existe
+
+    const persona = await Persona.findByPk(usuario.id_persona);
+    const nombre = persona ? `${persona.nombre} ${persona.ap || ''}`.trim() : email;
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expira = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 horas
+
+    await UsuarioRepository.actualizarUsuario(usuario.id_usuario, {
+        token_activacion: token,
+        token_expira: expira,
+    });
+
+    enviarEmailReset({ destinatario: email, nombre, token }).catch((err) => {
+        console.error('⚠️ No se pudo enviar el email de reset:', err.message);
+    });
+};
+
+const resetearPassword = async (token, password) => {
+    if (!token) throw new Error('Token requerido');
+    if (!password || password.length < PASSWORD_MIN_LENGTH) {
+        throw new Error(`La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`);
+    }
+
+    const usuario = await UsuarioRepository.obtenerUsuarioPorToken(token);
+    if (!usuario) throw new Error('El enlace no es válido o ya fue usado');
+    if (new Date() > new Date(usuario.token_expira)) {
+        throw new Error('El enlace ha expirado. Solicita uno nuevo');
+    }
+
+    const usuarioConPass = await UsuarioRepository.obtenerUsuarioPorIdConPassword(usuario.id_usuario);
+    usuarioConPass.password = password;
+    usuarioConPass.token_activacion = null;
+    usuarioConPass.token_expira = null;
+    await usuarioConPass.save();
+
+    return { message: 'Contraseña restablecida exitosamente. Ya puedes iniciar sesión.' };
+};
 
 const obtenerUsuarios = async () => {
     try {
@@ -399,6 +465,9 @@ const actualizarEstado= async (id, estadoBool) =>{
 }
 module.exports = {
     crearUsuario,
+    activarCuenta,
+    solicitarResetPassword,
+    resetearPassword,
     obtenerUsuarios,
     obtenerUsuarioPorId,
     obtenerUsuarioPorIdPersona,
@@ -411,7 +480,8 @@ module.exports = {
     cambiarVerificacion,
     eliminarUsuario,
     login,
-    desbloquearUsuario,actualizarEstado
+    desbloquearUsuario,
+    actualizarEstado
 };
 /*const UsuarioRepository = require('../repositories/usuarioRepository');
 const { Persona } = require('../models');

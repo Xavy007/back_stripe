@@ -512,6 +512,49 @@ const eliminarUsuario = async (req, res) => {
 
 
 // ============================================
+// RESET DE CONTRASEÑA
+// ============================================
+
+const solicitarReset = async (req, res) => {
+    try {
+        const { email } = req.body;
+        await usuarioService.solicitarResetPassword(email);
+        // Siempre responder igual para no revelar si el email existe
+        res.status(200).json({ success: true, message: 'Si el email existe, recibirás un enlace en tu correo.' });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+const resetearPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        const resultado = await usuarioService.resetearPassword(token, password);
+        res.status(200).json({ success: true, message: resultado.message });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// ============================================
+// ACTIVACIÓN DE CUENTA
+// ============================================
+
+const activarCuenta = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        const resultado = await usuarioService.activarCuenta(token, password);
+
+        res.status(200).json({ success: true, message: resultado.message });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// ============================================
 // AUTENTICACIÓN
 // ============================================
 
@@ -570,6 +613,9 @@ function toBooleanEstado(valor) {
 
 module.exports = {
     crearUsuario,
+    activarCuenta,
+    solicitarReset,
+    resetearPassword,
     crearUsuarioParaPersonaExistente,
     obtenerUsuarios,
     obtenerUsuarioPorId,

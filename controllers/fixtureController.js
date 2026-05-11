@@ -1459,7 +1459,7 @@ class FixtureController {
           {
             model: Campeonato,
             as: 'campeonato',
-            attributes: ['id_campeonato', 'nombre', 'gestion']
+            attributes: ['id_campeonato', 'nombre']
           },
           {
             model: CampeonatoCategoria,
@@ -1515,10 +1515,10 @@ class FixtureController {
         fecha_partido: partido.fecha_hora ? new Date(partido.fecha_hora).toISOString().split('T')[0] : null,
         hora_partido: partido.fecha_hora ? new Date(partido.fecha_hora).toTimeString().slice(0, 5) : null,
         p_estado: partido.p_estado,
-        marcador_local: partido.marcador_local,
-        marcador_visitante: partido.marcador_visitante,
-        sets_local: partido.sets_local,
-        sets_visitante: partido.sets_visitante,
+        marcador_local: null,
+        marcador_visitante: null,
+        sets_local: partido.resultado_local  ?? null,
+        sets_visitante: partido.resultado_visitante ?? null,
         numero_partido: partido.id_partido,
         equipo_local: partido.equipoLocal ? {
           id: partido.equipoLocal.id_equipo,
@@ -1560,7 +1560,6 @@ class FixtureController {
         campeonato: partido.campeonato ? {
           id: partido.campeonato.id_campeonato,
           nombre: String(partido.campeonato.nombre || ''),
-          gestion: partido.campeonato.gestion,
           id_cc: partido.campeonatoCategoria?.id_cc
         } : null,
         arbitros: partido.asignacionJueces ? {
@@ -1677,8 +1676,8 @@ class FixtureController {
             attributes: ['id_equipo', 'nombre', 'id_club'],
             include: [{ model: Club, as: 'club', attributes: ['id_club', 'nombre', 'logo'] }]
           },
-          { model: Cancha, as: 'cancha', attributes: ['id_cancha', 'nombre_cancha'] },
-          { model: Campeonato, as: 'campeonato', attributes: ['id_campeonato', 'nombre_campeonato'] }
+          { model: Cancha, as: 'cancha', attributes: ['id_cancha', 'nombre'] },
+          { model: Campeonato, as: 'campeonato', attributes: ['id_campeonato', 'nombre'] }
         ],
         order: [['fecha_hora', 'ASC']]
       });

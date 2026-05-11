@@ -73,8 +73,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     failed_attempts: { type: DataTypes.INTEGER, defaultValue: 0, allowNull: false },
     locked_until: { type: DataTypes.DATE, allowNull: true },
-    verificado: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
+    verificado: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false },
     estado: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
+    token_activacion: { type: DataTypes.STRING, allowNull: true },
+    token_expira: { type: DataTypes.DATE, allowNull: true },
 
     id_persona: {
       type: DataTypes.INTEGER,

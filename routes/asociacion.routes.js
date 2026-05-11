@@ -10,6 +10,12 @@ const { upload, attachFilePath, handleMulterError } = crearUploadConfig('asociac
 // GET — público (carnets y reportes lo necesitan sin autenticación)
 router.get('/', controller.obtener);
 
+// GET /estado — público, verifica si la asociación ya fue configurada
+router.get('/estado', controller.obtenerEstado);
+
+// POST /setup — público, solo funciona si el sistema aún no fue configurado
+router.post('/setup', controller.setupInicial);
+
 // PUT — solo admin puede modificar los datos de la asociación
 router.put('/',
   authMiddleware,
